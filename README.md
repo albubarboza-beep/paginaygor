@@ -1,33 +1,25 @@
-🎯 Diagnóstico Estratégico Refinado
-Cliente: Ygor Santos — Treinador Pessoal, Ibicuí-BA Público: Geral premium + mulheres 35+ + high-ticket Objetivo: Conversão direta (WhatsApp) Decisão UX: 4 temas alternáveis (A/B/C/D) via toggle persistente
+# Ygor Santos — Site Premium
 
-Insight crítico: O público 35+ feminino high-ticket NÃO quer ver "gritaria fitness". Quer ver sofisticação, resultado discreto, autoridade silenciosa. Pense em joalheria, spa de luxo, clínica estética premium — não em academia de bairro. Isso muda completamente a linguagem visual.
+Landing page de alto padrão para Ygor Santos, treinador pessoal em Ibicuí · BA, voltada para público feminino 35+ high-ticket.
 
-💡 Proposta — Referências reais que vou destilar
-Linear.app → micro-interações com propósito, easing curves perfeitos
-Rauno.me (Rauno Freiberg) → cursor sofisticado, hover states orquestrados
-Emil Kowalski (emilkowal.ski) → typography editorial, espaço negativo
-Equinox.com (gym premium NYC) → fotografia + tipografia editorial
-Arc Browser → mood azul profundo + gradientes sutis
-Stripe.com → hierarquia tipográfica modular, conversão limpa
-🏗️ Arquitetura de Entrega
-Vou montar tudo agora. Como é um projeto extenso (HTML semântico + CSS modular + JS modular + 4 temas + GSAP + acessibilidade), vou trabalhar no sandbox e te entregar:
+## 🎨 4 temas alternáveis (canto superior direito ou direita centralizada no desktop)
 
-Copyygor-premium/
-├── index.html              # HTML semântico, zero estilos inline
-├── assets/
-│   ├── css/
-│   │   ├── tokens.css      # Variáveis OKLCH dos 4 temas
-│   │   ├── base.css        # Reset + tipografia + escala modular
-│   │   ├── components.css  # Botões, cards, navbar, etc
-│   │   ├── sections.css    # Hero, sobre, planos, FAQ, etc
-│   │   └── animations.css  # Keyframes + utilitários motion
-│   └── js/
-│       ├── theme-switcher.js   # Toggle A/B/C/D + localStorage
-│       ├── animations.js       # GSAP ScrollTrigger + SplitText
-│       ├── cursor.js           # Spotlight cursor desktop
-│       ├── magnetic.js         # Botões magnéticos
-│       └── interactions.js     # FAQ, mobile menu, carrossel
-└── README.md
+- **A · Electric** — Linear/Vercel (cyberpunk-tech, roxo-azul elétrico)
+- **B · Corporate** — Apple/Stripe (clean premium, azul Apple)
+- **C · Midnight** — Editorial (sóbrio, jornalístico, azul vibrante)
+- **D · Aurora** — Cinematográfico (gradientes mesh, energético)
 
+A escolha persiste em `localStorage`.
 
+## 🚀 Como rodar local
+
+Como usa apenas HTML/CSS/JS estático, basta abrir o `index.html` em qualquer browser moderno.
+
+Para servir corretamente (alguns browsers bloqueiam `file://`):
+
+```bash
+# Python 3
+python3 -m http.server 8080
+
+# Node (npx)
+npx serve .
