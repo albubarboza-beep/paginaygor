@@ -7,8 +7,8 @@
   min-height: 100vh;
   display: flex;
   align-items: stretch;
-  /* ALTERE ESTA LINHA: Mudado de var(--s-11) (160px) para 90px */
-  padding: 90px 0 var(--s-9); 
+  /* Reduzimos o padding superior da seção inteira */
+  padding: 100px 0 var(--s-9); 
   overflow: hidden;
 }
 
@@ -16,12 +16,13 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  /* MUDANÇA AQUI: faz o container interno ocupar todo o espaço vertical livre */
-  flex: 1; 
+  flex: 1;
+  /* ISSO AQUI FORÇA O BOTÃO A SUBIR: zera qualquer espaçamento extra */
+  padding-top: 0 !important; 
 }
 
 .hero__bottom {
-  /* MUDANÇA AQUI: Essa é a mágica que empurra todo esse bloco lá pro rodapé, liberando o logo */
+  /* Empurra o bloco debaixo lá pro rodapé */
   margin-top: auto; 
   margin-bottom: var(--s-5);
 }
