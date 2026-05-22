@@ -390,52 +390,84 @@
 
 /* ============================================
    CURSOR CUSTOMIZADO (apenas desktop, pointer fine)
+   FIX: usa CSS variables --x, --y para posicionamento.
+   Isso evita conflito com translate(-50%, -50%) usado para centralizar.
    ============================================ */
 
 .cursor {
   position: fixed;
   top: 0; left: 0;
+  width: 0; height: 0;
   pointer-events: none;
   z-index: 10000;
-  mix-blend-mode: difference;
   display: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .cursor { display: block; }
+
   body { cursor: none; }
-  a, button, [data-magnetic], summary { cursor: none; }
+  body a,
+  body button,
+  body [data-magnetic],
+  body summary,
+  body input,
+  body textarea,
+  body select { cursor: none; }
 }
 
-.cursor__dot {
-  position: absolute;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--fg-0);
-  transform: translate(-50%, -50%);
-  transition: width 0.2s var(--ease-out-expo),
-              height 0.2s var(--ease-out-expo);
-}
-
+/* —— wrapper que carrega CSS vars de posição —— */
+.cursor__dot,
 .cursor__ring {
-  position: absolute;
-  width: 36px; height: 36px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
   border-radius: 50%;
-  border: 1px solid var(--fg-0);
-  transform: translate(-50%, -50%);
-  transition: width 0.3s var(--ease-out-expo),
-              height 0.3s var(--ease-out-expo),
+  /* translate(-50%, -50%) centraliza no ponto + translate(var(--x), var(--y)) move */
+  transform: translate(-50%, -50%) translate(var(--x, -100px), var(--y, -100px));
+  opacity: 0;
+  transition: opacity 0.3s ease, width 0.25s var(--ease-out-expo),
+              height 0.25s var(--ease-out-expo),
+              background 0.25s var(--ease-out-quart),
               border-color 0.3s var(--ease-out-quart);
 }
 
+/* só aparece depois do primeiro movimento */
+.cursor.is-ready .cursor__dot,
+.cursor.is-ready .cursor__ring {
+  opacity: 1;
+}
+
+.cursor__dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
+  z-index: 10001;
+}
+
+.cursor__ring {
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--accent);
+  background: transparent;
+  z-index: 10000;
+}
+
+/* —— hover state em interativos —— */
 .cursor.is-hover .cursor__dot {
-  width: 0; height: 0;
+  width: 0;
+  height: 0;
 }
 
 .cursor.is-hover .cursor__ring {
-  width: 56px; height: 56px;
+  width: 52px;
+  height: 52px;
+  background: var(--accent-soft);
   border-color: var(--accent);
 }
+
 
 /* ============================================
    WHATSAPP FLOAT
