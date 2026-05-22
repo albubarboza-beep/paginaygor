@@ -6,9 +6,9 @@
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: stretch;
-  /* Reduzimos o padding superior da seção inteira */
-  padding: 100px 0 var(--s-9); 
+  /* MÁGICA 1: Volta a ancorar tudo no meio, acompanhando o centro da imagem de fundo */
+  align-items: center; 
+  padding: 60px 0 0 0; /* Deixa apenas um espaço pro menu superior */
   overflow: hidden;
 }
 
@@ -16,16 +16,18 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  flex: 1;
-  /* ISSO AQUI FORÇA O BOTÃO A SUBIR: zera qualquer espaçamento extra */
-  padding-top: 0 !important; 
+  /* MÁGICA 2: Isso cria um "vão" no meio do seu código, separando o topo da base 
+     sometricamente para enquadrar a arte do YGOR SANTOS perfeitamente */
+  gap: 28vh; 
+  padding: 0;
 }
 
 .hero__bottom {
-  /* Empurra o bloco debaixo lá pro rodapé */
-  margin-top: auto; 
-  margin-bottom: var(--s-5);
+  /* Removemos as margens automáticas da versão anterior que quebraram o layout */
+  margin-top: 0;
+  margin-bottom: 0;
 }
+
 /* ============================================
    NOVAS CLASSES DO PLANO DE FUNDO
    ============================================ */
