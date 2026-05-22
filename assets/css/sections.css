@@ -300,7 +300,14 @@
   letter-spacing: 0.03em;
 }
 
-.metodo__locations svg { color: var(--accent); flex-shrink: 0; }
+.metodo__locations svg { 
+  /* ADICIONE ESTAS DUAS LINHAS: */
+  width: 24px; 
+  height: 24px; 
+  
+  color: var(--accent); 
+  flex-shrink: 0; 
+}
 
 /* ============================================
    RESULTADOS
