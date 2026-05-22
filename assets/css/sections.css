@@ -11,20 +11,18 @@
   overflow: hidden;
 }
 
-/* 1. IMAGEM DE FUNDO - MOBILE FIRST */
+/* 1. IMAGEM MOBILE FIRST: Foca no rosto/corpo do Ygor no celular */
 .hero__bg-image {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* MÁGICA DO MOBILE: Desloca o foco da imagem para 75% à direita. 
-     Isso garante que o rosto e o peitoral do Ygor apareçam no celular, e não só o ombro. */
-  object-position: 75% center; 
+  object-position: 85% 20%; 
   z-index: 0;
 }
 
-/* No desktop (telas largas), o foco volta pro centro para mostrar a arte completa */
+/* No desktop, volta a centralizar a arte completa */
 @media (min-width: 900px) {
   .hero__bg-image {
     object-position: center;
@@ -38,43 +36,38 @@
   z-index: 1;
 }
 
-/* 2. CONTAINER INTERNO - O LAYOUT EM SI */
+/* 2. LAYOUT QUE NÃO ESMAGA AS BORDAS */
 .hero__inner--bg {
   position: relative;
   z-index: 1;
   width: 100%;
-  flex: 1; /* Ocupa 100% da altura da seção Hero */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Empurra o topo pro teto e a base pro chão */
-  
-  /* CORREÇÃO DO ALINHAMENTO LATERAL: 
-     Usamos APENAS top e bottom. Isso impede que o CSS apague as 
-     margens de segurança (padding) da classe .container! */
-  padding-top: 120px;
-  padding-bottom: 40px;
+  justify-content: space-between;
+
+  /* Usamos apenas PADDING-TOP e BOTTOM. 
+     Isso impede que o CSS apague as margens laterais do .container! */
+  padding-top: max(120px, 12vh);
+  padding-bottom: max(40px, 6vh);
 }
 
-/* 3. BLOCO SUPERIOR (Apenas Localização) */
 .hero__top {
-  margin-bottom: auto; /* Garante que não empurre coisas pra baixo no mobile */
+  margin-bottom: auto; /* Trava o selo lá no teto */
 }
 
-/* 4. BLOCO INFERIOR (Botão + Estatísticas) */
 .hero__bottom {
   display: flex;
   flex-direction: column;
-  gap: var(--s-6); /* Espaço elegante entre o botão e os números */
-  margin-top: auto;
-  max-width: 600px; /* No desktop, impede que os textos passem por cima do corpo do Ygor */
+  gap: var(--s-6); /* Dá o espaço perfeito entre o botão e os números */
+  margin-top: auto; /* Trava o botão e números no chão */
+  max-width: 600px;
 }
 
-/* 5. AJUSTES FINOS DE DESIGN */
 .hero__proof {
   padding-top: var(--s-5);
   border-top: 1px solid color-mix(in oklch, var(--border-strong) 40%, transparent);
 }
-
 /* ============================================
    NOVAS CLASSES DO PLANO DE FUNDO
    ============================================ */
