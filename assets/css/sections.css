@@ -2,12 +2,18 @@
    HERO
    ============================================ */
 
+/* ============================================
+   HERO
+   ============================================ */
+
 .hero {
   position: relative;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
-  padding: 0; /* Zera os paddings aqui para não bugar o tamanho da tela */
+  /* 1. MÁGICA DA PROFUNDIDADE: Volta a ancorar tudo no centro absoluto da tela, 
+        sincronizando perfeitamente com o centro da imagem de fundo. */
+  align-items: center; 
+  padding: 0; 
   overflow: hidden;
 }
 
@@ -15,16 +21,28 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  flex: 1; /* Ocupa 100% da altura da seção Hero perfeitamente */
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Ímã: puxa o topo pro teto e a base pro chão */
-  padding: 100px 0 60px 0; /* 100px libera o Navbar no topo. 60px desgruda do chão. */
+  justify-content: center;
+  /* 2. MÁGICA DA HARMONIA: O gap em 'vw' (Viewport Width) faz com que a separação 
+        entre o botão e os números cresça proporcionalmente à tela, abrindo a "janela" 
+        exata para o texto 3D do Ygor sem NUNCA espremer ou encostar. */
+  gap: clamp(260px, 22vw, 420px); 
+  margin-top: 6vh; /* Desce o bloco sutilmente para livrar o menu Navbar */
+}
+
+/* 3. Ajuste fino de semântica: zera a margem antiga do botão para o gap funcionar 100% */
+.hero__top .hero__cta {
+  margin-bottom: 0; 
 }
 
 .hero__bottom {
-  margin: 0; /* Zera margens zumbis que estavam desalinhando as coisas */
+  margin: 0;
 }
+
+/* ============================================
+   NOVAS CLASSES DO PLANO DE FUNDO
+   ============================================ */
 
 /* ============================================
    NOVAS CLASSES DO PLANO DE FUNDO
