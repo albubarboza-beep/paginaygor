@@ -1,0 +1,173 @@
+/* ============================================
+   DESIGN TOKENS — 4 TEMAS AZUL × PRETO
+   OKLCH para consistência perceptual entre temas
+   ============================================ */
+
+:root {
+  /* —— escala tipográfica modular (perfect fifth ~1.25) —— */
+  --fs-xs:   clamp(.75rem,  .72rem + .15vw, .82rem);
+  --fs-sm:   clamp(.875rem, .84rem + .2vw,  .95rem);
+  --fs-base: clamp(1rem,    .96rem + .25vw, 1.1rem);
+  --fs-md:   clamp(1.25rem, 1.18rem + .4vw, 1.45rem);
+  --fs-lg:   clamp(1.563rem, 1.45rem + .7vw, 1.95rem);
+  --fs-xl:   clamp(1.95rem, 1.78rem + 1.1vw, 2.6rem);
+  --fs-2xl:  clamp(2.44rem, 2.18rem + 1.7vw, 3.5rem);
+  --fs-3xl:  clamp(3.05rem, 2.68rem + 2.5vw, 4.7rem);
+  --fs-4xl:  clamp(3.8rem,  3.3rem + 3.6vw,  6.2rem);
+
+  /* —— espaçamento (4/8pt) —— */
+  --s-1: 4px;  --s-2: 8px;   --s-3: 12px;  --s-4: 16px;
+  --s-5: 24px; --s-6: 32px;  --s-7: 48px;  --s-8: 64px;
+  --s-9: 96px; --s-10: 128px; --s-11: 160px; --s-12: 192px;
+
+  /* —— elevation (sombras suaves, sem dramaturgia) —— */
+  --elev-1: 0 1px 2px oklch(0% 0 0 / .08), 0 1px 1px oklch(0% 0 0 / .04);
+  --elev-2: 0 4px 8px oklch(0% 0 0 / .12), 0 2px 4px oklch(0% 0 0 / .06);
+  --elev-3: 0 12px 24px oklch(0% 0 0 / .18), 0 4px 8px oklch(0% 0 0 / .08);
+  --elev-4: 0 24px 48px oklch(0% 0 0 / .25), 0 8px 16px oklch(0% 0 0 / .12);
+
+  /* —— motion curves —— */
+  --ease-out-expo:   cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart:  cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out:     cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-bounce:     cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* —— radii —— */
+  --r-sm: 6px; --r-md: 10px; --r-lg: 16px; --r-xl: 24px; --r-pill: 999px;
+
+  /* —— durações —— */
+  --d-fast: 180ms; --d-base: 320ms; --d-slow: 540ms; --d-slower: 820ms;
+
+  /* —— containers —— */
+  --container: 1240px;
+  --container-narrow: 880px;
+}
+
+/* ===========================================================
+   TEMA A · ELECTRIC (Linear / Vercel)
+   Cyberpunk-tech, monocromático absurdo, acento eletrizante
+   =========================================================== */
+[data-theme="electric"] {
+  --bg-0: oklch(13% 0.015 265);          /* preto azulado profundo */
+  --bg-1: oklch(17% 0.02 265);
+  --bg-2: oklch(22% 0.025 265);
+  --bg-3: oklch(28% 0.03 265);
+
+  --fg-0: oklch(98% 0.005 265);          /* branco com pitada azul */
+  --fg-1: oklch(85% 0.01 265);
+  --fg-2: oklch(62% 0.015 265);
+  --fg-3: oklch(45% 0.02 265);
+
+  --accent:        oklch(64% 0.21 273);  /* roxo-azul Linear */
+  --accent-hover:  oklch(70% 0.22 273);
+  --accent-soft:   oklch(64% 0.21 273 / .12);
+  --accent-glow:   oklch(64% 0.21 273 / .35);
+  --accent-ink:    oklch(13% 0.015 265); /* texto sobre accent */
+
+  --border:        oklch(100% 0 0 / .08);
+  --border-strong: oklch(100% 0 0 / .14);
+
+  --grid-line:     oklch(100% 0 0 / .04);
+  --noise-opacity: 0.025;
+
+  --hero-gradient: radial-gradient(ellipse at 50% 0%,
+    oklch(64% 0.21 273 / .15) 0%,
+    transparent 60%);
+}
+
+/* ===========================================================
+   TEMA B · CORPORATE (Apple / Stripe)
+   Clean, corporativo premium, espaço negativo dominante
+   =========================================================== */
+[data-theme="corporate"] {
+  --bg-0: oklch(8% 0 0);                 /* preto absoluto Apple */
+  --bg-1: oklch(13% 0.005 250);
+  --bg-2: oklch(18% 0.008 250);
+  --bg-3: oklch(24% 0.01 250);
+
+  --fg-0: oklch(99% 0 0);
+  --fg-1: oklch(88% 0 0);
+  --fg-2: oklch(64% 0 0);
+  --fg-3: oklch(46% 0 0);
+
+  --accent:        oklch(60% 0.18 252);  /* azul Apple */
+  --accent-hover:  oklch(66% 0.19 252);
+  --accent-soft:   oklch(60% 0.18 252 / .1);
+  --accent-glow:   oklch(60% 0.18 252 / .25);
+  --accent-ink:    oklch(99% 0 0);
+
+  --border:        oklch(100% 0 0 / .07);
+  --border-strong: oklch(100% 0 0 / .12);
+
+  --grid-line:     oklch(100% 0 0 / .03);
+  --noise-opacity: 0.02;
+
+  --hero-gradient: radial-gradient(ellipse at 50% 100%,
+    oklch(60% 0.18 252 / .18) 0%,
+    transparent 70%);
+}
+
+/* ===========================================================
+   TEMA C · MIDNIGHT (Editorial — Bloomberg/NYT)
+   Sóbrio, sofisticado, jornalístico premium
+   =========================================================== */
+[data-theme="midnight"] {
+  --bg-0: oklch(15% 0.04 250);           /* midnight profundo */
+  --bg-1: oklch(20% 0.045 250);
+  --bg-2: oklch(26% 0.05 250);
+  --bg-3: oklch(33% 0.055 250);
+
+  --fg-0: oklch(97% 0.01 250);
+  --fg-1: oklch(86% 0.015 250);
+  --fg-2: oklch(66% 0.02 250);
+  --fg-3: oklch(48% 0.025 250);
+
+  --accent:        oklch(68% 0.18 245);  /* azul editorial vibrante */
+  --accent-hover:  oklch(74% 0.19 245);
+  --accent-soft:   oklch(68% 0.18 245 / .14);
+  --accent-glow:   oklch(68% 0.18 245 / .3);
+  --accent-ink:    oklch(15% 0.04 250);
+
+  --border:        oklch(100% 0 0 / .09);
+  --border-strong: oklch(100% 0 0 / .16);
+
+  --grid-line:     oklch(100% 0 0 / .04);
+  --noise-opacity: 0.03;
+
+  --hero-gradient: radial-gradient(ellipse at 30% 20%,
+    oklch(68% 0.18 245 / .2) 0%,
+    transparent 55%);
+}
+
+/* ===========================================================
+   TEMA D · AURORA (Cinematográfico)
+   Gradientes mesh, moderno, energético sem ser estridente
+   =========================================================== */
+[data-theme="aurora"] {
+  --bg-0: oklch(14% 0.05 260);
+  --bg-1: oklch(19% 0.06 258);
+  --bg-2: oklch(25% 0.07 256);
+  --bg-3: oklch(32% 0.08 254);
+
+  --fg-0: oklch(98% 0.005 250);
+  --fg-1: oklch(87% 0.012 250);
+  --fg-2: oklch(67% 0.018 250);
+  --fg-3: oklch(50% 0.022 250);
+
+  --accent:        oklch(75% 0.16 220);  /* ciano-azul Aurora */
+  --accent-hover:  oklch(80% 0.17 220);
+  --accent-soft:   oklch(75% 0.16 220 / .15);
+  --accent-glow:   oklch(75% 0.16 220 / .4);
+  --accent-ink:    oklch(14% 0.05 260);
+
+  --border:        oklch(100% 0 0 / .1);
+  --border-strong: oklch(100% 0 0 / .18);
+
+  --grid-line:     oklch(100% 0 0 / .04);
+  --noise-opacity: 0.035;
+
+  --hero-gradient:
+    radial-gradient(ellipse at 20% 30%, oklch(60% 0.2 245 / .35) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 60%, oklch(75% 0.16 220 / .3) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, oklch(45% 0.18 270 / .25) 0%, transparent 60%);
+}
