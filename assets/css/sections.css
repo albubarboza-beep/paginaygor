@@ -6,28 +6,25 @@
   position: relative;
   min-height: 100vh;
   display: flex;
-  /* MÁGICA 1: Restaura a âncora central, devolvendo a profundidade em relação à imagem */
-  align-items: center; 
-  padding: 0; 
+  flex-direction: column;
+  padding: 0; /* Zera os paddings aqui para não bugar o tamanho da tela */
   overflow: hidden;
 }
 
 .hero__inner--bg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  flex: 1; /* Ocupa 100% da altura da seção Hero perfeitamente */
   display: flex;
   flex-direction: column;
-  /* MÁGICA 2: Empurra o botão pro teto e os números pro chão */
-  justify-content: space-between; 
-  width: 100%;
-  /* MÁGICA 3: Altura fixa gigante cria um "vácuo" perfeito no meio da tela */
-  height: 85vh; 
-  padding: 0;
-  margin-top: 8vh; /* Ajuste fino para descer o botão e livrar o menu superior */
+  justify-content: space-between; /* Ímã: puxa o topo pro teto e a base pro chão */
+  padding: 100px 0 60px 0; /* 100px libera o Navbar no topo. 60px desgruda do chão. */
 }
 
 .hero__bottom {
-  margin: 0;
-  transform: translateY(3vh); /* Dá um empurrão extra pra baixo, afastando os números da palavra 'DISCIPLINA' */
-} 
+  margin: 0; /* Zera margens zumbis que estavam desalinhando as coisas */
+}
 
 /* ============================================
    NOVAS CLASSES DO PLANO DE FUNDO
