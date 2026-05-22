@@ -1,37 +1,31 @@
 /**
  * cursor.js
- * Cursor customizado com Lerp e Sistema de Segurança (Fail-safe).
+ * Cursor avançado com lerp + label contextual via [data-cursor-label].
  */
 (() => {
-  // 1. Aborta se for touch ou não suportar mouse
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  // 2. Aborta se o sistema operacional pedir redução de animações
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const cursor = document.querySelector('.cursor');
-  const dot = cursor?.querySelector('.cursor__dot');
-  const ring = cursor?.querySelector('.cursor__ring');
+  if (!cursor) return;
 
-  if (!cursor || !dot || !ring) return;
+  const dot = cursor.querySelector('.cursor__dot');
+  const ring = cursor.querySelector('.cursor__ring');
+  const label = cursor.querySelector('.cursor__label');
+  if (!dot || !ring || !label) return;
 
-  // 3. SUCESSO! JS rodou perfeito. Adicionamos a classe no HTML que esconde o mouse padrão
-  document.documentElement.classList.add('custom-cursor-active');
-
-  let mouseX = -100, mouseY = -100;
-  let dotX = -100, dotY = -100;
-  let ringX = -100, ringY = -100;
-  let hasMoved = false;
+  let mx = -100, my = -100;
+  let dx = -100, dy = -100;
+  let rx = -100, ry = -100;
+  let lx = -100, ly = -100;
+  let moved = false;
 
   const onMove = (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-
-    if (!hasMoved) {
-      dotX = ringX = mouseX;
-      dotY = ringY = mouseY;
-      hasMoved = true;
-      cursor.classList.add('is-ready');
-    } else if (!cursor.classList.contains('is-ready')) {
+    mx = e.clientX; my = e.clientY;
+    if (!moved) {
+      dx = rx = lx = mx;
+      dy = ry = ly = my;
+      moved = true;
       cursor.classList.add('is-ready');
     }
   };
@@ -43,24 +37,38 @@
   const lerp = (a, b, n) => a + (b - a) * n;
 
   const tick = () => {
-    if (hasMoved) {
-      dotX = lerp(dotX, mouseX, 0.55);
-      dotY = lerp(dotY, mouseY, 0.55);
-      ringX = lerp(ringX, mouseX, 0.18);
-      ringY = lerp(ringY, mouseY, 0.18);
+    dx = lerp(dx, mx, 0.6);
+    dy = lerp(dy, my, 0.6);
+    rx = lerp(rx, mx, 0.18);
+    ry = lerp(ry, my, 0.18);
+    lx = lerp(lx, mx, 0.22);
+    ly = lerp(ly, my, 0.22);
 
-      dot.style.setProperty('--x', `${dotX}px`);
-      dot.style.setProperty('--y', `${dotY}px`);
-      ring.style.setProperty('--x', `${ringX}px`);
-      ring.style.setProperty('--y', `${ringY}px`);
-    }
+    dot.style.setProperty('--x', `${dx}px`);
+    dot.style.setProperty('--y', `${dy}px`);
+    ring.style.setProperty('--x', `${rx}px`);
+    ring.style.setProperty('--y', `${ry}px`);
+    label.style.setProperty('--x', `${lx}px`);
+    label.style.setProperty('--y', `${ly}px`);
+
     requestAnimationFrame(tick);
   };
   tick();
 
+  // Hover state em interativos
   const interactives = 'a, button, [data-magnetic], summary, input, textarea, select, details';
   document.querySelectorAll(interactives).forEach((el) => {
-    el.addEventListener('mouseenter', () => cursor.classList.add('is-hover'));
-    el.addEventListener('mouseleave', () => cursor.classList.remove('is-hover'));
+    el.addEventListener('mouseenter', () => {
+      cursor.classList.add('is-hover');
+      const text = el.getAttribute('data-cursor-label');
+      if (text) {
+        label.textContent = text;
+        cursor.classList.add('has-label');
+      }
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.classList.remove('is-hover');
+      cursor.classList.remove('has-label');
+    });
   });
 })();
