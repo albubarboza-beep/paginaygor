@@ -35,6 +35,10 @@
       dotX = ringX = mouseX;
       dotY = ringY = mouseY;
       hasMoved = true;
+    }
+
+    // CORREÇÃO: Garante que o cursor volte a aparecer sempre que o mouse se mover dentro da tela
+    if (!cursor.classList.contains('is-ready')) {
       cursor.classList.add('is-ready');
     }
   };
@@ -47,6 +51,7 @@
   document.addEventListener('mouseleave', () => {
     cursor.classList.remove('is-ready');
   });
+  
   document.addEventListener('mouseenter', () => {
     cursor.classList.add('is-ready');
   });
