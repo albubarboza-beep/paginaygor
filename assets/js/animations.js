@@ -1,81 +1,109 @@
 /**
  * animations.js
- * Orquestração GSAP + ScrollTrigger.
- * Hero entrance + reveal-on-scroll com stagger orquestrado.
+ * Orquestração GSAP + SplitType + ScrollTrigger.
+ * - Hero entrance cinemático
+ * - Split text por linhas e palavras
+ * - Reveal generic com stagger
+ * - Counter animations
+ * - Parallax sutil no hero
  */
 (() => {
-  // —— aguarda GSAP estar carregado (defer pode atrasar) ——
-  const start = () => {
-    if (!window.gsap) {
-      requestAnimationFrame(start);
+  const boot = () => {
+    if (!window.gsap || !window.SplitType) {
+      requestAnimationFrame(boot);
       return;
     }
 
-    const { gsap } = window;
-    const ScrollTrigger = window.ScrollTrigger;
+    const { gsap, ScrollTrigger, SplitType } = window;
     if (ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduced) {
-      // —— sem animações, apenas revela tudo ——
       document.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-visible'));
+      document.querySelectorAll('[data-split], [data-split-lines]').forEach((el) => el.classList.add('split-ready'));
       return;
     }
 
     // ============================================
-    // 1. HERO — entrada cinemática orquestrada
+    // SPLIT TYPE — prepara textos para animação
+    // ============================================
+    const splits = {};
+
+    document.querySelectorAll('[data-split]').forEach((el) => {
+      splits[el.dataset.splitId || Math.random()] = new SplitType(el, { types: 'words, chars' });
+      el.classList.add('split-ready');
+    });
+
+    document.querySelectorAll('[data-split-lines]').forEach((el) => {
+      new SplitType(el, { types: 'lines, words' });
+      el.classList.add('split-ready');
+
+      // wrap each line for overflow:hidden trick
+      el.querySelectorAll('.line').forEach((line) => {
+        const inner = document.createElement('span');
+        inner.className = 'line__inner';
+        inner.style.display = 'inline-block';
+        while (line.firstChild) inner.appendChild(line.firstChild);
+        line.appendChild(inner);
+      });
+    });
+
+    // ============================================
+    // HERO ENTRANCE
     // ============================================
     const hero = document.querySelector('.hero');
     if (hero) {
-      const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+      const tl = gsap.timeline({
+        defaults: { ease: 'expo.out' },
+        delay: 0.3, // dá tempo do loader sair
+      });
 
-      // split simples sem plugin pago: dividimos por palavra com regex
-      const title = hero.querySelector('[data-split]');
-      if (title && !title.dataset.splitDone) {
-        const html = title.innerHTML;
-        const wrapped = html.replace(/(\S+)/g, '<span class="word"><span class="word__inner">$1</span></span>');
-        title.innerHTML = wrapped;
-        title.dataset.splitDone = 'true';
-
-        // garante CSS inline necessário (caso o build não importe)
-        title.querySelectorAll('.word').forEach((w) => {
-          w.style.display = 'inline-block';
-          w.style.overflow = 'hidden';
-        });
-        title.querySelectorAll('.word__inner').forEach((w) => {
-          w.style.display = 'inline-block';
-          w.style.willChange = 'transform';
-        });
-      }
-
-      tl
-        .from(hero.querySelector('.hero__meta'), {
-          opacity: 0, y: 16, duration: 0.9
-        })
-        .from(hero.querySelectorAll('.word__inner'), {
-          yPercent: 110, duration: 1.1, stagger: 0.04
-        }, '-=0.5')
-        .from(hero.querySelector('.hero__lead'), {
-          opacity: 0, y: 24, duration: 1
-        }, '-=0.7')
-        .from(hero.querySelectorAll('.hero__cta > *'), {
-          opacity: 0, y: 16, duration: 0.8, stagger: 0.08
-        }, '-=0.6')
-        .from(hero.querySelectorAll('.hero__proof-item'), {
-          opacity: 0, y: 16, duration: 0.8, stagger: 0.1
-        }, '-=0.5')
-        .from(hero.querySelector('.hero__scroll'), {
-          opacity: 0, duration: 0.6
-        }, '-=0.3');
+      tl.from(hero.querySelector('.hero__kicker'), {
+        opacity: 0, y: 16, duration: 0.9,
+      })
+      .from(hero.querySelectorAll('[data-split] .char'), {
+        yPercent: 110,
+        opacity: 0,
+        duration: 1.1,
+        stagger: 0.025,
+      }, '-=0.5')
+      .from(hero.querySelectorAll('.hero__actions > *'), {
+        opacity: 0, y: 20, duration: 0.9, stagger: 0.1,
+      }, '-=0.7')
+      .from(hero.querySelector('.hero__scroll'), {
+        opacity: 0, y: 10, duration: 0.8,
+      }, '-=0.5')
+      .from(hero.querySelector('.hero__marquee'), {
+        opacity: 0, duration: 0.8,
+      }, '-=0.6');
     }
 
     // ============================================
-    // 2. REVEAL ON SCROLL — generic com stagger
+    // SPLIT LINES — anima por linha em scroll
+    // ============================================
+    document.querySelectorAll('[data-split-lines]').forEach((el) => {
+      const lines = el.querySelectorAll('.line__inner');
+      gsap.from(lines, {
+        yPercent: 105,
+        opacity: 0,
+        duration: 1.1,
+        ease: 'expo.out',
+        stagger: 0.1,
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+          once: true,
+        },
+      });
+    });
+
+    // ============================================
+    // GENERIC REVEAL
     // ============================================
     if (ScrollTrigger) {
       gsap.utils.toArray('[data-reveal]').forEach((el) => {
-        // pula elementos do hero (já tratados pela timeline)
         if (el.closest('.hero')) {
           el.classList.add('is-visible');
           return;
@@ -83,18 +111,17 @@
 
         const delay = parseFloat(el.dataset.revealDelay || '0');
 
-        gsap.fromTo(
-          el,
-          { opacity: 0, y: 32 },
+        gsap.fromTo(el,
+          { opacity: 0, y: 40 },
           {
             opacity: 1,
             y: 0,
-            duration: 0.95,
+            duration: 1,
             delay,
             ease: 'expo.out',
             scrollTrigger: {
               trigger: el,
-              start: 'top 85%',
+              start: 'top 88%',
               toggleActions: 'play none none none',
               once: true,
             },
@@ -104,12 +131,35 @@
       });
 
       // ============================================
-      // 3. PARALLAX SUTIL no hero__aurora
+      // COUNTERS — anima números das estatísticas e planos
       // ============================================
-      const aurora = document.querySelector('.hero__aurora');
-      if (aurora) {
-        gsap.to(aurora, {
-          yPercent: 30,
+      document.querySelectorAll('[data-counter]').forEach((el) => {
+        const target = parseInt(el.dataset.counter, 10);
+        if (isNaN(target)) return;
+
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: target,
+          duration: 2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            once: true,
+          },
+          onUpdate: () => {
+            el.textContent = Math.round(obj.val).toLocaleString('pt-BR');
+          },
+        });
+      });
+
+      // ============================================
+      // HERO PARALLAX (imagem + overlay)
+      // ============================================
+      const heroImg = document.querySelector('.hero__media img');
+      if (heroImg) {
+        gsap.to(heroImg, {
+          yPercent: 12,
           ease: 'none',
           scrollTrigger: {
             trigger: '.hero',
@@ -120,19 +170,34 @@
         });
       }
 
+      // Tagline sutil parallax
+      const tagline = document.querySelector('.hero__tagline');
+      if (tagline) {
+        gsap.to(tagline, {
+          y: -40,
+          opacity: 0.6,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '.hero',
+            start: 'top top',
+            end: 'bottom 60%',
+            scrub: 1,
+          },
+        });
+      }
+
       // ============================================
-      // 4. ScrollTrigger refresh quando tema muda
-      // (caso a mudança altere alturas/layout)
+      // Refresh ScrollTrigger quando tema muda
       // ============================================
       window.addEventListener('themechange', () => {
-        setTimeout(() => ScrollTrigger.refresh(), 100);
+        setTimeout(() => ScrollTrigger.refresh(), 200);
       });
     }
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start);
+    document.addEventListener('DOMContentLoaded', boot);
   } else {
-    start();
+    boot();
   }
 })();
