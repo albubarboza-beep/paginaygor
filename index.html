@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="midnight">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Ygor Santos — Treinador pessoal premium em Ibicuí, BA. Metodologia exclusiva para mulheres 35+ que buscam resultados sustentáveis." />
+  <meta name="theme-color" content="#0A1628" />
+
+  <title>Ygor Santos — Performance & Longevidade</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/base.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/sections.css" />
+  <link rel="stylesheet" href="assets/css/animations.css" />
+</head>
+<body>
+
+  <!-- ================ NOISE OVERLAY (sutil, em todos os temas) ================ -->
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- ================ CURSOR CUSTOMIZADO (desktop) ================ -->
+  <div class="cursor" aria-hidden="true">
+    <div class="cursor__dot"></div>
+    <div class="cursor__ring"></div>
+  </div>
+
+  <!-- ================ THEME SWITCHER (canto superior direito) ================ -->
+  <div class="theme-switcher" role="group" aria-label="Selecionar tema visual">
+    <button class="theme-switcher__toggle" aria-expanded="false" aria-label="Abrir seletor de temas">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <span>Tema</span>
+    </button>
+    <div class="theme-switcher__panel" role="menu">
+      <button class="theme-option" data-theme="electric" role="menuitemradio" aria-checked="false">
+        <span class="theme-option__swatch" style="background: linear-gradient(135deg, #5E6AD2, #08090A);"></span>
+        <span class="theme-option__label">
+          <strong>A · Electric</strong>
+          <em>Linear / Vercel</em>
+        </span>
+      </button>
+      <button class="theme-option" data-theme="corporate" role="menuitemradio" aria-checked="false">
+        <span class="theme-option__swatch" style="background: linear-gradient(135deg, #0071E3, #000000);"></span>
+        <span class="theme-option__label">
+          <strong>B · Corporate</strong>
+          <em>Apple / Stripe</em>
+        </span>
+      </button>
+      <button class="theme-option" data-theme="midnight" role="menuitemradio" aria-checked="true">
+        <span class="theme-option__swatch" style="background: linear-gradient(135deg, #0A1628, #3B82F6);"></span>
+        <span class="theme-option__label">
+          <strong>C · Midnight</strong>
+          <em>Editorial</em>
+        </span>
+      </button>
+      <button class="theme-option" data-theme="aurora" role="menuitemradio" aria-checked="false">
+        <span class="theme-option__swatch" style="background: linear-gradient(135deg, #1E3A8A, #06B6D4);"></span>
+        <span class="theme-option__label">
+          <strong>D · Aurora</strong>
+          <em>Cinematográfico</em>
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================ NAVBAR ================ -->
+  <header class="nav" id="nav">
+    <div class="nav__inner container">
+      <a href="#hero" class="nav__brand" aria-label="Ygor Santos — Início">
+        <span class="nav__brand-mark">YS</span>
+        <span class="nav__brand-text">
+          <strong>Ygor Santos</strong>
+          <em>Treinador Pessoal</em>
+        </span>
+      </a>
+
+      <nav class="nav__links" aria-label="Navegação principal">
+        <a href="#metodo">Método</a>
+        <a href="#resultados">Resultados</a>
+        <a href="#processo">Processo</a>
+        <a href="#planos">Planos</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--primary nav__cta" data-magnetic>
+        <span>Conversar no WhatsApp</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 5l7 7-7 7"/>
+        </svg>
+      </a>
+
+      <button class="nav__burger" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================ MOBILE MENU ================ -->
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <nav class="mobile-menu__nav" aria-label="Navegação mobile">
+      <a href="#metodo">Método</a>
+      <a href="#resultados">Resultados</a>
+      <a href="#processo">Processo</a>
+      <a href="#planos">Planos</a>
+      <a href="#faq">FAQ</a>
+      <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--primary">Conversar no WhatsApp</a>
+    </nav>
+  </div>
+
+  <main>
+
+    <!-- ================ HERO ================ -->
+    <section class="hero" id="hero">
+      <div class="hero__bg" aria-hidden="true">
+        <div class="hero__grid"></div>
+        <div class="hero__aurora"></div>
+      </div>
+
+      <div class="container hero__inner">
+        <div class="hero__meta" data-reveal>
+          <span class="dot"></span>
+          <span>Atendendo presencial em Ibicuí · BA</span>
+        </div>
+
+        <h1 class="hero__title" data-split>
+          Performance e longevidade,<br />
+          <em>com elegância.</em>
+        </h1>
+
+        <p class="hero__lead" data-reveal data-reveal-delay="0.2">
+          Treinos personalizados para mulheres 35+ que buscam resultados sustentáveis —
+          sem dietas extremas, sem rotinas exaustivas, com inteligência aplicada.
+        </p>
+
+        <div class="hero__cta" data-reveal data-reveal-delay="0.4">
+          <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--primary btn--lg" data-magnetic>
+            <span>Agendar avaliação</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="#metodo" class="btn btn--ghost btn--lg" data-magnetic>
+            Conhecer o método
+          </a>
+        </div>
+
+        <div class="hero__proof" data-reveal data-reveal-delay="0.6">
+          <div class="hero__proof-item">
+            <strong>+10 anos</strong>
+            <span>de experiência</span>
+          </div>
+          <div class="hero__proof-item">
+            <strong>+300</strong>
+            <span>alunas transformadas</span>
+          </div>
+          <div class="hero__proof-item">
+            <strong>CREF</strong>
+            <span>profissional certificado</span>
+          </div>
+        </div>
+      </div>
+
+      <a href="#metodo" class="hero__scroll" aria-label="Rolar para próxima seção">
+        <span></span>
+      </a>
+    </section>
+
+    <!-- ================ MÉTODO / SOBRE ================ -->
+    <section class="metodo" id="metodo">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">O Método</span>
+          <h2 class="section-title">
+            Não é academia.<br />É <em>arquitetura</em> do corpo.
+          </h2>
+        </div>
+
+        <div class="metodo__grid">
+          <div class="metodo__text" data-reveal data-reveal-delay="0.15">
+            <p class="metodo__lede">
+              Há mais de uma década dedico minha prática a um público específico:
+              mulheres maduras que valorizam <strong>resultado mensurável</strong>,
+              <strong>tempo respeitado</strong> e <strong>processo inteligente</strong>.
+            </p>
+            <p>
+              Trabalho com fundamentos da fisiologia do exercício, biomecânica e
+              periodização — adaptados à realidade da mulher contemporânea: agenda
+              cheia, recuperação hormonal específica, articulações que pedem
+              atenção, autoestima que merece cuidado.
+            </p>
+            <p>
+              Cada protocolo nasce de uma anamnese profunda. Não existe template
+              copiado. Existe ciência aplicada ao seu corpo.
+            </p>
+
+            <ul class="metodo__pills">
+              <li>Fisiologia do exercício</li>
+              <li>Biomecânica</li>
+              <li>Periodização inteligente</li>
+              <li>Recuperação hormonal</li>
+              <li>Treino híbrido</li>
+              <li>Acompanhamento contínuo</li>
+            </ul>
+          </div>
+
+          <aside class="metodo__card" data-reveal data-reveal-delay="0.3">
+            <div class="metodo__card-glow" aria-hidden="true"></div>
+
+            <div class="metodo__stat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+              </svg>
+              <div>
+                <strong>10+ anos</strong>
+                <span>de prática profissional</span>
+              </div>
+            </div>
+
+            <div class="metodo__stat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <div>
+                <strong>+300</strong>
+                <span>alunas em transformação</span>
+              </div>
+            </div>
+
+            <div class="metodo__stat">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <path d="M22 4L12 14.01l-3-3"/>
+              </svg>
+              <div>
+                <strong>98%</strong>
+                <span>de retenção após 6 meses</span>
+              </div>
+            </div>
+
+            <div class="metodo__locations">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span>Ibicuí · BA — atendimento presencial e online</span>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================ RESULTADOS ================ -->
+    <section class="resultados" id="resultados">
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <span class="eyebrow">Resultados</span>
+          <h2 class="section-title">
+            Transformações <em>reais</em>.<br />
+            Sem filtros.
+          </h2>
+          <p class="section-sub">
+            Cada história abaixo é de uma aluna que confiou no processo — e descobriu
+            que disciplina pode ser leve quando há método.
+          </p>
+        </div>
+
+        <div class="resultados__grid">
+          <article class="resultado-card" data-reveal>
+            <div class="resultado-card__visual">
+              <div class="resultado-card__badge">+8kg de massa magra</div>
+            </div>
+            <div class="resultado-card__body">
+              <h3>Marina, 42</h3>
+              <p>"Voltei a ter força para brincar com meus filhos. E ganhei algo que não esperava: <em>silêncio mental</em>."</p>
+              <div class="resultado-card__metrics">
+                <span>8 meses</span>
+                <span>·</span>
+                <span>3x/semana</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="resultado-card" data-reveal data-reveal-delay="0.1">
+            <div class="resultado-card__visual">
+              <div class="resultado-card__badge">−14% de gordura</div>
+            </div>
+            <div class="resultado-card__body">
+              <h3>Patrícia, 51</h3>
+              <p>"Aos 51, descobri que estava no início, não no fim. Hoje treino com prazer e como sem culpa."</p>
+              <div class="resultado-card__metrics">
+                <span>12 meses</span>
+                <span>·</span>
+                <span>4x/semana</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="resultado-card" data-reveal data-reveal-delay="0.2">
+            <div class="resultado-card__visual">
+              <div class="resultado-card__badge">Dor lombar zerada</div>
+            </div>
+            <div class="resultado-card__body">
+              <h3>Helena, 38</h3>
+              <p>"Cheguei com dor crônica e descrença. Saí com um corpo funcional e uma rotina que me cabe."</p>
+              <div class="resultado-card__metrics">
+                <span>6 meses</span>
+                <span>·</span>
+                <span>3x/semana</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================ PROCESSO ================ -->
+    <section class="processo" id="processo">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <span class="eyebrow">Como funciona</span>
+          <h2 class="section-title">
+            Quatro etapas.<br />
+            <em>Zero improviso.</em>
+          </h2>
+        </div>
+
+        <ol class="processo__steps">
+          <li class="processo-step" data-reveal>
+            <span class="processo-step__num">01</span>
+            <h3>Conversa inicial</h3>
+            <p>Entendemos seu momento, seu histórico e seus objetivos reais. Sem pressão, sem promessa milagrosa.</p>
+          </li>
+          <li class="processo-step" data-reveal data-reveal-delay="0.1">
+            <span class="processo-step__num">02</span>
+            <h3>Avaliação completa</h3>
+            <p>Anamnese aprofundada, testes funcionais, análise postural. Mapeamos o ponto de partida.</p>
+          </li>
+          <li class="processo-step" data-reveal data-reveal-delay="0.2">
+            <span class="processo-step__num">03</span>
+            <h3>Protocolo personalizado</h3>
+            <p>Planejamento de treino periodizado, ajustado à sua agenda, sua biomecânica e suas metas.</p>
+          </li>
+          <li class="processo-step" data-reveal data-reveal-delay="0.3">
+            <span class="processo-step__num">04</span>
+            <h3>Acompanhamento contínuo</h3>
+            <p>Reavaliações periódicas, ajustes finos e suporte direto comigo. Você nunca treina sozinha.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ================ PLANOS ================ -->
+    <section class="planos" id="planos">
+      <div class="container">
+        <div class="section-head section-head--center" data-reveal>
+          <span class="eyebrow">Investimento</span>
+          <h2 class="section-title">
+            Planos pensados para <em>continuidade</em>.
+          </h2>
+          <p class="section-sub">
+            Não vendemos pacotes curtos. Vendemos transformação real — e isso exige tempo.
+          </p>
+        </div>
+
+        <div class="planos__grid">
+          <article class="plano" data-reveal>
+            <header class="plano__head">
+              <h3>Essencial</h3>
+              <p>Para quem está começando a jornada.</p>
+            </header>
+            <div class="plano__price">
+              <span class="plano__price-from">a partir de</span>
+              <div>
+                <span class="plano__currency">R$</span>
+                <span class="plano__value">480</span>
+                <span class="plano__period">/mês</span>
+              </div>
+            </div>
+            <ul class="plano__features">
+              <li>2 sessões semanais</li>
+              <li>Avaliação inicial completa</li>
+              <li>Plano de treino personalizado</li>
+              <li>Reavaliação trimestral</li>
+              <li>Suporte por WhatsApp</li>
+            </ul>
+            <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--ghost btn--block" data-magnetic>Quero esse plano</a>
+          </article>
+
+          <article class="plano plano--featured" data-reveal data-reveal-delay="0.15">
+            <span class="plano__badge">Mais escolhido</span>
+            <header class="plano__head">
+              <h3>Premium</h3>
+              <p>Para quem quer resultado consistente.</p>
+            </header>
+            <div class="plano__price">
+              <span class="plano__price-from">a partir de</span>
+              <div>
+                <span class="plano__currency">R$</span>
+                <span class="plano__value">780</span>
+                <span class="plano__period">/mês</span>
+              </div>
+            </div>
+            <ul class="plano__features">
+              <li>3 sessões semanais</li>
+              <li>Avaliação inicial completa</li>
+              <li>Plano de treino + plano nutricional básico</li>
+              <li>Reavaliação mensal</li>
+              <li>Suporte direto e prioritário</li>
+              <li>Acompanhamento de progresso semanal</li>
+            </ul>
+            <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--primary btn--block" data-magnetic>Quero esse plano</a>
+          </article>
+
+          <article class="plano" data-reveal data-reveal-delay="0.3">
+            <header class="plano__head">
+              <h3>Exclusivo</h3>
+              <p>Atenção total. Resultado máximo.</p>
+            </header>
+            <div class="plano__price">
+              <span class="plano__price-from">a partir de</span>
+              <div>
+                <span class="plano__currency">R$</span>
+                <span class="plano__value">1.280</span>
+                <span class="plano__period">/mês</span>
+              </div>
+            </div>
+            <ul class="plano__features">
+              <li>4 a 5 sessões semanais</li>
+              <li>Avaliação completa + exames recomendados</li>
+              <li>Plano integrado: treino + nutrição + recuperação</li>
+              <li>Reavaliação quinzenal</li>
+              <li>Suporte 24/7 comigo</li>
+              <li>Sessões de mentoria mensal</li>
+            </ul>
+            <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--ghost btn--block" data-magnetic>Quero esse plano</a>
+          </article>
+        </div>
+
+        <p class="planos__note" data-reveal>
+          Todos os planos passam por uma <a href="https://wa.me/5577999999999" target="_blank" rel="noopener">conversa inicial gratuita</a> antes da contratação.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================ FAQ ================ -->
+    <section class="faq" id="faq">
+      <div class="container container--narrow">
+        <div class="section-head section-head--center" data-reveal>
+          <span class="eyebrow">Perguntas frequentes</span>
+          <h2 class="section-title">
+            Tudo o que você precisa <em>saber antes</em>.
+          </h2>
+        </div>
+
+        <div class="faq__list">
+          <details class="faq-item" data-reveal>
+            <summary>
+              <span>Nunca treinei na vida. Posso começar?</span>
+              <span class="faq-item__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Sim — e na verdade essa é a melhor hora. Construímos a base do zero, no seu ritmo, respeitando sua biomecânica. O método foi desenhado exatamente para quem precisa começar do começo, com segurança.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal data-reveal-delay="0.05">
+            <summary>
+              <span>Tenho mais de 50 anos. Vou conseguir acompanhar?</span>
+              <span class="faq-item__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>A maior parte das minhas alunas está nessa faixa. O protocolo é desenhado para o seu corpo, não para um padrão genérico. Idade não é limitação — é dado de planejamento.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal data-reveal-delay="0.1">
+            <summary>
+              <span>Atende online ou só presencial?</span>
+              <span class="faq-item__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Ambos. Atendimento presencial em Ibicuí, BA. Atendimento online com videochamadas estruturadas, app de acompanhamento e suporte direto via WhatsApp para alunas de qualquer cidade.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal data-reveal-delay="0.15">
+            <summary>
+              <span>Quanto tempo até ver resultado?</span>
+              <span class="faq-item__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Resultado visível externo: entre 6 e 12 semanas. Resultado interno (energia, sono, humor, força): nas primeiras 3 semanas. Mas o que importa é resultado <em>sustentável</em> — e isso pede tempo. Não trabalho com promessa de 30 dias.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal data-reveal-delay="0.2">
+            <summary>
+              <span>E se eu tiver alguma lesão ou limitação?</span>
+              <span class="faq-item__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Conversamos antes de qualquer coisa. Em muitos casos trabalho em parceria com fisioterapeutas e médicos. O plano é construído ao redor das suas particularidades — não apesar delas.</p>
+            </div>
+          </details>
+
+          <details class="faq-item" data-reveal data-reveal-delay="0.25">
+            <summary>
+              <span>Posso cancelar a qualquer momento?</span>
+              <span class="faq-item__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq-item__body">
+              <p>Sim. Trabalho com contratos mensais renováveis, sem fidelidade obrigatória. A continuidade é uma escolha sua a cada mês — e meu trabalho é fazer com que essa escolha seja fácil.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================ CTA FINAL ================ -->
+    <section class="cta-final">
+      <div class="cta-final__bg" aria-hidden="true"></div>
+      <div class="container">
+        <div class="cta-final__inner" data-reveal>
+          <span class="eyebrow">Próximo passo</span>
+          <h2 class="cta-final__title">
+            Sua transformação<br />
+            <em>começa com uma conversa.</em>
+          </h2>
+          <p class="cta-final__lead">
+            Vagas limitadas. Atendimento personalizado exige tempo —
+            e tempo é o recurso mais finito que tenho.
+          </p>
+          <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--primary btn--lg" data-magnetic>
+            <span>Agendar avaliação no WhatsApp</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================ FOOTER ================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand">
+          <a href="#hero" class="nav__brand">
+            <span class="nav__brand-mark">YS</span>
+            <span class="nav__brand-text">
+              <strong>Ygor Santos</strong>
+              <em>Treinador Pessoal</em>
+            </span>
+          </a>
+          <p>Performance e longevidade para mulheres que valorizam tempo, resultado e processo inteligente.</p>
+        </div>
+
+        <div class="footer__col">
+          <h5>Navegação</h5>
+          <ul>
+            <li><a href="#metodo">Método</a></li>
+            <li><a href="#resultados">Resultados</a></li>
+            <li><a href="#processo">Processo</a></li>
+            <li><a href="#planos">Planos</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <h5>Contato</h5>
+          <ul>
+            <li><a href="https://wa.me/5577999999999" target="_blank" rel="noopener">WhatsApp direto</a></li>
+            <li><a href="mailto:contato@ygorsantos.com.br">contato@ygorsantos.com.br</a></li>
+            <li><span>Ibicuí · BA</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <p>© <span id="year"></span> Ygor Santos. Todos os direitos reservados.</p>
+        <p>Site por <a href="#" target="_blank" rel="noopener">[Seu nome aqui]</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================ WHATSAPP FLOAT ================ -->
+  <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="wa-float" aria-label="Falar no WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    </svg>
+  </a>
+
+  <!-- ================ SCRIPTS ================ -->
+  <!-- GSAP CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+
+  <!-- Módulos próprios -->
+  <script src="assets/js/theme-switcher.js" defer></script>
+  <script src="assets/js/interactions.js" defer></script>
+  <script src="assets/js/cursor.js" defer></script>
+  <script src="assets/js/magnetic.js" defer></script>
+  <script src="assets/js/animations.js" defer></script>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
