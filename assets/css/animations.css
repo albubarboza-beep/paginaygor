@@ -1,11 +1,10 @@
 /* ============================================
-   REVEAL ANIMATIONS (controlado por GSAP em JS)
-   Fallback CSS apenas para prefers-reduced-motion
+   REVEAL — controlado por GSAP, fallback CSS
    ============================================ */
 
 [data-reveal] {
   opacity: 0;
-  transform: translateY(30px);
+  transform: translateY(40px);
   will-change: opacity, transform;
 }
 
@@ -14,7 +13,6 @@
   transform: translateY(0);
 }
 
-/* —— se o usuário pediu menos movimento, revelamos instantaneamente —— */
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] {
     opacity: 1;
@@ -23,16 +21,31 @@
 }
 
 /* ============================================
-   SPLIT TEXT — preparação para GSAP SplitText
+   SPLIT TYPE — preparação
    ============================================ */
 
-[data-split] {
-  overflow: hidden;
-  display: inline-block;
+[data-split],
+[data-split-lines] {
+  visibility: hidden;
 }
 
-[data-split] .word,
-[data-split] .char {
+[data-split].split-ready,
+[data-split-lines].split-ready {
+  visibility: visible;
+}
+
+.char,
+.word,
+.line {
   display: inline-block;
   will-change: transform, opacity;
+}
+
+[data-split-lines] .line {
+  display: block;
+  overflow: hidden;
+}
+
+[data-split-lines] .line > * {
+  display: inline-block;
 }
