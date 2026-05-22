@@ -424,8 +424,8 @@
   left: 0;
   pointer-events: none;
   border-radius: 50%;
-  /* translate(-50%, -50%) centraliza no ponto + translate(var(--x), var(--y)) move */
-  transform: translate(-50%, -50%) translate(var(--x, -100px), var(--y, -100px));
+  /* translate3d força aceleração de hardware (GPU) para evitar travamentos no scroll */
+  transform: translate3d(var(--x, -100px), var(--y, -100px), 0) translate(-50%, -50%);
   opacity: 0;
   transition: opacity 0.3s ease, width 0.25s var(--ease-out-expo),
               height 0.25s var(--ease-out-expo),
@@ -467,7 +467,6 @@
   background: var(--accent-soft);
   border-color: var(--accent);
 }
-
 
 /* ============================================
    WHATSAPP FLOAT
