@@ -1,89 +1,92 @@
 /**
  * theme-switcher.js
- * Alterna entre 4 temas, persiste em localStorage,
- * comunica mudança para outros módulos via custom event.
+ * Troca de tema com View Transitions API (Chrome 111+).
+ * Fallback gracioso para browsers sem suporte.
  */
 (() => {
   const STORAGE_KEY = 'ygor-theme';
-  const VALID_THEMES = ['electric', 'corporate', 'midnight', 'aurora'];
-  const DEFAULT_THEME = 'midnight';
+  const VALID = ['obsidian', 'steel', 'abyss', 'storm'];
+  const DEFAULT = 'obsidian';
+  const NAMES = {
+    obsidian: 'Obsidian',
+    steel: 'Steel',
+    abyss: 'Abyss',
+    storm: 'Storm',
+  };
 
   const root = document.documentElement;
   const switcher = document.querySelector('.theme-switcher');
   const toggle = switcher?.querySelector('.theme-switcher__toggle');
   const panel = switcher?.querySelector('.theme-switcher__panel');
   const options = switcher?.querySelectorAll('.theme-option');
+  const currentLabel = switcher?.querySelector('.theme-switcher__current');
 
   if (!switcher || !toggle || !panel || !options) return;
 
-  // —— aplica tema salvo (ou default) na inicialização ——
   const saved = localStorage.getItem(STORAGE_KEY);
-  const initial = VALID_THEMES.includes(saved) ? saved : DEFAULT_THEME;
-  applyTheme(initial, false);
+  const initial = VALID.includes(saved) ? saved : DEFAULT;
+  applyTheme(initial, false, false);
 
-  // —— toggle do painel ——
   toggle.addEventListener('click', (e) => {
     e.stopPropagation();
-    const isOpen = switcher.classList.toggle('is-open');
-    toggle.setAttribute('aria-expanded', String(isOpen));
+    const open = switcher.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(open));
   });
 
-  // —— fecha ao clicar fora ——
   document.addEventListener('click', (e) => {
-    if (!switcher.contains(e.target)) {
-      switcher.classList.remove('is-open');
-      toggle.setAttribute('aria-expanded', 'false');
-    }
+    if (!switcher.contains(e.target)) close();
   });
 
-  // —— fecha com Esc ——
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && switcher.classList.contains('is-open')) {
-      switcher.classList.remove('is-open');
-      toggle.setAttribute('aria-expanded', 'false');
+      close();
       toggle.focus();
     }
   });
 
-  // —— clique nas opções ——
   options.forEach((opt) => {
     opt.addEventListener('click', () => {
       const theme = opt.dataset.theme;
-      if (!VALID_THEMES.includes(theme)) return;
-      applyTheme(theme, true);
-      switcher.classList.remove('is-open');
-      toggle.setAttribute('aria-expanded', 'false');
+      if (!VALID.includes(theme)) return;
+      applyTheme(theme, true, true);
+      close();
     });
   });
 
-  /**
-   * Aplica o tema ao :root, marca opção ativa, persiste e emite evento.
-   * @param {string} theme
-   * @param {boolean} persist
-   */
-  function applyTheme(theme, persist) {
-    root.setAttribute('data-theme', theme);
+  function close() {
+    switcher.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
 
-    // atualiza meta theme-color para refletir tema (PWA / browser chrome)
-    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    if (metaThemeColor) {
-      const themeColors = {
-        electric:  '#0F1117',
-        corporate: '#0A0A0A',
-        midnight:  '#0A1628',
-        aurora:    '#0E1B3A',
-      };
-      metaThemeColor.setAttribute('content', themeColors[theme] || '#0A1628');
+  function applyTheme(theme, persist, withTransition) {
+    const update = () => {
+      root.setAttribute('data-theme', theme);
+      if (currentLabel) currentLabel.textContent = NAMES[theme];
+
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) {
+        const colors = {
+          obsidian: '#0A0C10',
+          steel:    '#0A0A0A',
+          abyss:    '#0C0E16',
+          storm:    '#0A0E1A',
+        };
+        meta.setAttribute('content', colors[theme] || colors.obsidian);
+      }
+
+      options.forEach((o) => {
+        o.setAttribute('aria-checked', String(o.dataset.theme === theme));
+      });
+
+      if (persist) localStorage.setItem(STORAGE_KEY, theme);
+      window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
+    };
+
+    // View Transitions API (Chrome 111+, Edge 111+)
+    if (withTransition && document.startViewTransition) {
+      document.startViewTransition(() => update());
+    } else {
+      update();
     }
-
-    options.forEach((opt) => {
-      const isActive = opt.dataset.theme === theme;
-      opt.setAttribute('aria-checked', String(isActive));
-    });
-
-    if (persist) localStorage.setItem(STORAGE_KEY, theme);
-
-    // —— emite evento para outros módulos (ex: animações que dependem de cor) ——
-    window.dispatchEvent(new CustomEvent('themechange', { detail: { theme } }));
   }
 })();
