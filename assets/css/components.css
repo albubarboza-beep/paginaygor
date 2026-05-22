@@ -390,14 +390,11 @@
 
 /* ============================================
    CURSOR CUSTOMIZADO (apenas desktop, pointer fine)
-   FIX: usa CSS variables --x, --y para posicionamento.
-   Isso evita conflito com translate(-50%, -50%) usado para centralizar.
    ============================================ */
 
 .cursor {
   position: fixed;
-  top: 0; left: 0;
-  width: 0; height: 0;
+  inset: 0;
   pointer-events: none;
   z-index: 10000;
   display: none;
@@ -405,27 +402,22 @@
 
 @media (hover: hover) and (pointer: fine) {
   .cursor { display: block; }
-
-  body { cursor: none; }
-  body a,
-  body button,
-  body [data-magnetic],
-  body summary,
-  body input,
-  body textarea,
-  body select { cursor: none; }
 }
 
-/* —— wrapper que carrega CSS vars de posição —— */
+/* REGRA DE SEGURANÇA: Só esconde o mouse nativo se o JS aplicar essa classe! */
+html.custom-cursor-active,
+html.custom-cursor-active * {
+  cursor: none !important;
+}
+
 .cursor__dot,
 .cursor__ring {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   pointer-events: none;
   border-radius: 50%;
-  /* translate3d força aceleração de hardware (GPU) para evitar travamentos no scroll */
-  transform: translate3d(var(--x, -100px), var(--y, -100px), 0) translate(-50%, -50%);
+  /* Transform blindado contra bugs de renderização */
+  transform: translate(calc(var(--x, -100px) - 50%), calc(var(--y, -100px) - 50%));
   opacity: 0;
   transition: opacity 0.3s ease, width 0.25s var(--ease-out-expo),
               height 0.25s var(--ease-out-expo),
@@ -433,37 +425,28 @@
               border-color 0.3s var(--ease-out-quart);
 }
 
-/* só aparece depois do primeiro movimento */
 .cursor.is-ready .cursor__dot,
 .cursor.is-ready .cursor__ring {
   opacity: 1;
 }
 
 .cursor__dot {
-  width: 6px;
-  height: 6px;
+  width: 6px; height: 6px;
   background: var(--accent);
   box-shadow: 0 0 12px var(--accent-glow);
   z-index: 10001;
 }
 
 .cursor__ring {
-  width: 36px;
-  height: 36px;
+  width: 36px; height: 36px;
   border: 1.5px solid var(--accent);
   background: transparent;
   z-index: 10000;
 }
 
-/* —— hover state em interativos —— */
-.cursor.is-hover .cursor__dot {
-  width: 0;
-  height: 0;
-}
-
+.cursor.is-hover .cursor__dot { width: 0; height: 0; }
 .cursor.is-hover .cursor__ring {
-  width: 52px;
-  height: 52px;
+  width: 52px; height: 52px;
   background: var(--accent-soft);
   border-color: var(--accent);
 }
