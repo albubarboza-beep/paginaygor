@@ -6,17 +6,25 @@
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  /* MUDANÇA AQUI: de 'center' para 'stretch' para o container preencher a tela inteira */
+  align-items: stretch; 
   padding: var(--s-11) 0 var(--s-9);
   overflow: hidden;
 }
 
-.hero__bg {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
+.hero__inner--bg {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  /* MUDANÇA AQUI: faz o container interno ocupar todo o espaço vertical livre */
+  flex: 1; 
 }
 
+.hero__bottom {
+  /* MUDANÇA AQUI: Essa é a mágica que empurra todo esse bloco lá pro rodapé, liberando o logo */
+  margin-top: auto; 
+  margin-bottom: var(--s-5);
+}
 /* ============================================
    NOVAS CLASSES DO PLANO DE FUNDO
    ============================================ */
