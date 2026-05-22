@@ -6,28 +6,26 @@
   position: relative;
   min-height: 100vh;
   display: flex;
-  /* MÁGICA 1: Volta a ancorar tudo no meio, acompanhando o centro da imagem de fundo */
-  align-items: center; 
-  padding: 60px 0 0 0; /* Deixa apenas um espaço pro menu superior */
+  /* MUDANÇA: 'stretch' permite que o container interno ocupe 100% da altura da tela */
+  align-items: stretch; 
+  /* 110px no topo (pula o menu) e 60px na base (para os números não cortarem) */
+  padding: 110px 0 60px 0; 
   overflow: hidden;
 }
 
 .hero__inner--bg {
   display: flex;
   flex-direction: column;
+  /* A MÁGICA: Empurra o primeiro item pro topo máximo e o último pra base máxima */
+  justify-content: space-between; 
   width: 100%;
-  /* MÁGICA 2: Isso cria um "vão" no meio do seu código, separando o topo da base 
-     sometricamente para enquadrar a arte do YGOR SANTOS perfeitamente */
-  gap: 28vh; 
+  flex: 1; /* Garante que ele vai preencher toda a altura disponível */
   padding: 0;
 }
 
 .hero__bottom {
-  /* Removemos as margens automáticas da versão anterior que quebraram o layout */
-  margin-top: 0;
-  margin-bottom: 0;
+  margin: 0; /* Limpa qualquer margem antiga */
 }
-
 /* ============================================
    NOVAS CLASSES DO PLANO DE FUNDO
    ============================================ */
