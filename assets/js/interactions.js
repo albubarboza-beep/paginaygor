@@ -1,12 +1,17 @@
 /**
  * interactions.js
- * Menu mobile, FAQ accessibility, navbar scroll state,
- * smooth scroll fallback.
+ * Loader, navbar, mobile menu, FAQ, scroll progress.
  */
 (() => {
-  // ============================================
-  // Navbar — adiciona .scrolled após threshold
-  // ============================================
+  // ============ LOADER ============
+  const loader = document.getElementById('loader');
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      loader?.classList.add('is-done');
+    }, 400);
+  });
+
+  // ============ NAVBAR scrolled ============
   const nav = document.getElementById('nav');
   if (nav) {
     let ticking = false;
@@ -23,9 +28,7 @@
     onScroll();
   }
 
-  // ============================================
-  // Mobile menu
-  // ============================================
+  // ============ MOBILE MENU ============
   const burger = document.querySelector('.nav__burger');
   const mobileMenu = document.getElementById('mobileMenu');
 
@@ -35,6 +38,7 @@
       mobileMenu.setAttribute('aria-hidden', 'true');
       burger.setAttribute('aria-expanded', 'false');
       document.body.style.overflow = '';
+      if (window.lenis) window.lenis.start();
     };
 
     const open = () => {
@@ -42,54 +46,42 @@
       mobileMenu.setAttribute('aria-hidden', 'false');
       burger.setAttribute('aria-expanded', 'true');
       document.body.style.overflow = 'hidden';
+      if (window.lenis) window.lenis.stop();
     };
 
     burger.addEventListener('click', () => {
-      const expanded = burger.getAttribute('aria-expanded') === 'true';
-      expanded ? close() : open();
+      burger.getAttribute('aria-expanded') === 'true' ? close() : open();
     });
 
-    // —— fecha ao clicar num link interno ——
     mobileMenu.querySelectorAll('a').forEach((a) => {
       a.addEventListener('click', close);
     });
 
-    // —— fecha com Esc ——
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && mobileMenu.classList.contains('is-open')) close();
     });
   }
 
-  // ============================================
-  // FAQ — garante que apenas um item fique aberto
-  // (UX preferida no público premium, evita cognitive load)
-  // ============================================
+  // ============ FAQ — single open ============
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach((item) => {
     item.addEventListener('toggle', () => {
       if (item.open) {
-        faqItems.forEach((other) => {
-          if (other !== item) other.open = false;
-        });
+        faqItems.forEach((o) => { if (o !== item) o.open = false; });
       }
     });
   });
 
-  // ============================================
-  // Smooth scroll para âncoras (fallback se scroll-behavior não suportado)
-  // ============================================
-  if (!('scrollBehavior' in document.documentElement.style)) {
-    document.querySelectorAll('a[href^="#"]').forEach((a) => {
-      a.addEventListener('click', (e) => {
-        const id = a.getAttribute('href');
-        if (id && id.length > 1) {
-          const target = document.querySelector(id);
-          if (target) {
-            e.preventDefault();
-            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
-      });
-    });
+  // ============ SCROLL PROGRESS ============
+  const progress = document.querySelector('.scroll-progress__fill');
+  if (progress) {
+    const onScroll = () => {
+      const h = document.documentElement;
+      const total = h.scrollHeight - h.clientHeight;
+      const pct = total > 0 ? (h.scrollTop / total) * 100 : 0;
+      progress.style.width = pct + '%';
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
   }
 })();
