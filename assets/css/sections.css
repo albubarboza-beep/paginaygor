@@ -6,9 +6,9 @@
   position: relative;
   min-height: 100vh;
   display: flex;
-  /* MUDANÇA AQUI: de 'center' para 'stretch' para o container preencher a tela inteira */
-  align-items: stretch; 
-  padding: var(--s-11) 0 var(--s-9);
+  align-items: stretch;
+  /* ALTERE ESTA LINHA: Mudado de var(--s-11) (160px) para 90px */
+  padding: 90px 0 var(--s-9); 
   overflow: hidden;
 }
 
