@@ -1,75 +1,40 @@
 /* ============================================
-   HERO - SOLUÇÃO DEFINITIVA (Desktop & Mobile)
+   HERO - LAYOUT EDITORIAL PREMIUM
    ============================================ */
 
 .hero {
   position: relative;
-  min-height: 100vh;
+  height: 100vh; /* Trava a seção no tamanho exato do monitor */
+  min-height: 700px; /* Proteção para não espremer em celulares pequenos */
   display: flex;
   flex-direction: column;
-  padding: 0;
+  /* 120px de espaço no teto protege o Menu. 40px no chão dá um respiro final. */
+  padding: 120px 0 40px 0; 
   overflow: hidden;
 }
 
-/* 1. IMAGEM DE FUNDO - MOBILE FIRST */
-.hero__bg-image {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  /* MÁGICA DO MOBILE: Desloca o foco da imagem para 75% à direita. 
-     Isso garante que o rosto e o peitoral do Ygor apareçam no celular, e não só o ombro. */
-  object-position: 75% center; 
-  z-index: 0;
-}
-
-/* No desktop (telas largas), o foco volta pro centro para mostrar a arte completa */
-@media (min-width: 900px) {
-  .hero__bg-image {
-    object-position: center;
-  }
-}
-
-.hero__overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, rgba(10, 22, 40, 0) 50%, var(--bg-0) 100%);
-  z-index: 1;
-}
-
-/* 2. CONTAINER INTERNO - O LAYOUT EM SI */
 .hero__inner--bg {
   position: relative;
   z-index: 1;
   width: 100%;
-  flex: 1; /* Ocupa 100% da altura da seção Hero */
+  flex: 1; /* Faz esse bloco preencher toda a altura disponível da tela */
   display: flex;
   flex-direction: column;
-  justify-content: space-between; /* Empurra o topo pro teto e a base pro chão */
-  
-  /* CORREÇÃO DO ALINHAMENTO LATERAL: 
-     Usamos APENAS top e bottom. Isso impede que o CSS apague as 
-     margens de segurança (padding) da classe .container! */
-  padding-top: 120px;
-  padding-bottom: 40px;
+  /* A MÁGICA: Empurra o selo de Ibicuí pro teto e o Botão+Números pro chão */
+  justify-content: space-between; 
+  margin: 0;
+  padding: 0;
 }
 
-/* 3. BLOCO SUPERIOR (Apenas Localização) */
-.hero__top {
-  margin-bottom: auto; /* Garante que não empurre coisas pra baixo no mobile */
-}
-
-/* 4. BLOCO INFERIOR (Botão + Estatísticas) */
 .hero__bottom {
   display: flex;
   flex-direction: column;
-  gap: var(--s-6); /* Espaço elegante entre o botão e os números */
-  margin-top: auto;
-  max-width: 600px; /* No desktop, impede que os textos passem por cima do corpo do Ygor */
+  gap: var(--s-6); /* Cria uma separação limpa e elegante entre o botão azul e os números */
+  margin: 0;
+  max-width: 600px; /* Evita que o texto invada o corpo do Ygor em telas esticadas */
 }
 
-/* 5. AJUSTES FINOS DE DESIGN */
+/* Suaviza a linha divisória das estatísticas para combinar com o fundo escuro */
 .hero__proof {
   padding-top: var(--s-5);
   border-top: 1px solid color-mix(in oklch, var(--border-strong) 40%, transparent);
