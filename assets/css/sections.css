@@ -1,19 +1,12 @@
 /* ============================================
-   HERO
-   ============================================ */
-
-/* ============================================
-   HERO
+   HERO - LAYOUT EDITORIAL PREMIUM
    ============================================ */
 
 .hero {
   position: relative;
   min-height: 100vh;
   display: flex;
-  /* 1. MÁGICA DA PROFUNDIDADE: Volta a ancorar tudo no centro absoluto da tela, 
-        sincronizando perfeitamente com o centro da imagem de fundo. */
-  align-items: center; 
-  padding: 0; 
+  padding: 0;
   overflow: hidden;
 }
 
@@ -21,23 +14,27 @@
   position: relative;
   z-index: 1;
   width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  /* 2. MÁGICA DA HARMONIA: O gap em 'vw' (Viewport Width) faz com que a separação 
-        entre o botão e os números cresça proporcionalmente à tela, abrindo a "janela" 
-        exata para o texto 3D do Ygor sem NUNCA espremer ou encostar. */
-  gap: clamp(260px, 22vw, 420px); 
-  margin-top: 6vh; /* Desce o bloco sutilmente para livrar o menu Navbar */
-}
-
-/* 3. Ajuste fino de semântica: zera a margem antiga do botão para o gap funcionar 100% */
-.hero__top .hero__cta {
-  margin-bottom: 0; 
+  /* A MÁGICA: Joga o Topo pro teto absoluto e a Base pro chão absoluto */
+  justify-content: space-between; 
+  /* 130px de espaço no teto (pula o menu). 6vh no chão (respiro do rodapé) */
+  padding: 130px 0 6vh 0; 
 }
 
 .hero__bottom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5); /* Cria um espaço elegante entre o botão azul e os números */
   margin: 0;
+  max-width: 650px; /* Impede que o bloco invada o braço do Ygor em monitores muito largos */
+}
+
+/* Um toque premium: deixar a linha divisória das estatísticas mais suave para o fundo escuro */
+.hero__proof {
+  padding-top: var(--s-5);
+  border-top: 1px solid color-mix(in oklch, var(--border-strong) 40%, transparent);
 }
 
 /* ============================================
