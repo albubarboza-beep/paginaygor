@@ -1,0 +1,177 @@
+/* ============================================
+   RESET + BASE TIPOGRÁFICA
+   ============================================ */
+
+*, *::before, *::after {
+  margin: 0; padding: 0; box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  tab-size: 4;
+  scroll-padding-top: 100px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  background: var(--bg-0);
+  color: var(--fg-1);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background var(--d-slow) var(--ease-out-quart),
+              color var(--d-slow) var(--ease-out-quart);
+  font-feature-settings: 'ss01', 'cv11';
+}
+
+img, svg, video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+button, input, textarea, select {
+  font: inherit; color: inherit;
+}
+
+button { cursor: pointer; background: none; border: 0; }
+
+a { color: inherit; text-decoration: none; }
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* —— scrollbar refinada —— */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-0); }
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--r-pill);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* —— focus states acessíveis —— */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--r-sm);
+}
+
+/* ============================================
+   TIPOGRAFIA EDITORIAL
+   ============================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-variation-settings: 'opsz' 144, 'SOFT' 50;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--fg-0);
+}
+
+h1 em, h2 em, h3 em {
+  font-style: italic;
+  font-variation-settings: 'opsz' 144, 'SOFT' 100;
+  color: var(--accent);
+  font-weight: 300;
+}
+
+p { color: var(--fg-1); }
+
+strong { color: var(--fg-0); font-weight: 600; }
+
+/* ============================================
+   LAYOUT — CONTAINERS
+   ============================================ */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--s-5);
+}
+
+.container--narrow {
+  max-width: var(--container-narrow);
+}
+
+@media (min-width: 768px) {
+  .container { padding: 0 var(--s-7); }
+}
+
+/* ============================================
+   UTILITÁRIOS DE SEÇÃO
+   ============================================ */
+
+.eyebrow {
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding: var(--s-2) var(--s-4);
+  border: 1px solid var(--accent-soft);
+  border-radius: var(--r-pill);
+  background: var(--accent-soft);
+  margin-bottom: var(--s-5);
+}
+
+.section-title {
+  font-size: var(--fs-3xl);
+  margin-bottom: var(--s-5);
+  max-width: 18ch;
+}
+
+.section-sub {
+  font-size: var(--fs-md);
+  color: var(--fg-2);
+  line-height: 1.55;
+  max-width: 52ch;
+  margin-top: var(--s-4);
+}
+
+.section-head {
+  margin-bottom: var(--s-9);
+}
+
+.section-head--center {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section-head--center .section-title,
+.section-head--center .section-sub {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============================================
+   NOISE OVERLAY (textura sutil)
+   ============================================ */
+.noise {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: var(--noise-opacity);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
