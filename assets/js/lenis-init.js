@@ -1,38 +1,47 @@
 /**
  * lenis-init.js
- * Smooth scroll com Lenis corrigido para máxima fluidez.
- * Sem travamentos ou conflitos com o GSAP Ticker.
+ * Smooth scroll FORÇADO (ignorando restrições do SO).
  */
 (() => {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  // TRAVA DE REDUÇÃO DE ANIMAÇÕES REMOVIDA DAQUI!
   if (!window.Lenis) return;
 
   const lenis = new window.Lenis({
-    duration: 1.2,
+    duration: 1.15,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     smoothWheel: true,
-    wheelMultiplier: 1,
+    smoothTouch: false,
     touchMultiplier: 2,
+    wheelMultiplier: 1,
   });
 
-  // Loop de RAF limpo e nativo (Extremamente seguro contra travamentos)
+  let rafId = null;
   function raf(time) {
     lenis.raf(time);
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
   }
-  requestAnimationFrame(raf);
+  rafId = requestAnimationFrame(raf);
 
-  // Sincroniza ScrollTrigger suavemente assim que ele carregar
-  const syncST = setInterval(() => {
-    if (window.ScrollTrigger) {
+  const tryIntegrate = (attempts) => {
+    attempts = attempts || 0;
+    if (attempts > 60) return;
+
+    if (window.gsap && window.ScrollTrigger) {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
       lenis.on('scroll', window.ScrollTrigger.update);
-      clearInterval(syncST);
+      window.gsap.ticker.add((time) => lenis.raf(time * 1000));
+      window.gsap.ticker.lagSmoothing(0);
+    } else {
+      setTimeout(() => tryIntegrate(attempts + 1), 50);
     }
-  }, 100);
+  };
+  tryIntegrate(0);
 
   window.lenis = lenis;
 
-  // Smooth scroll para âncoras e botões
   document.querySelectorAll('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', (e) => {
       const id = a.getAttribute('href');
