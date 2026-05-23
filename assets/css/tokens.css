@@ -1,5 +1,5 @@
 /* ============================================
-   DESIGN TOKENS — 4 ATMOSFERAS
+   DESIGN TOKENS — 4 ATMOSFERAS + HERITAGE
    Paleta refinada para conversar com fotografia
    metálica/grafite do Ygor.
    ============================================ */
@@ -58,7 +58,7 @@
   --fg-2: oklch(62% 0.012 250);
   --fg-3: oklch(45% 0.015 250);
 
-  --accent:        oklch(72% 0.05 240);   /* prata-azulada metálica */
+  --accent:        oklch(72% 0.05 240);
   --accent-2:      oklch(60% 0.08 235);
   --accent-hover:  oklch(78% 0.06 240);
   --accent-soft:   oklch(72% 0.05 240 / .12);
@@ -71,22 +71,14 @@
   --grid-line:     oklch(100% 0 0 / .035);
   --noise-opacity: 0.025;
 
-  /* Gradient para overlays */
+  /* Overlays com Efeito de Holofote Cinematográfico para Profundidade 3D */
   --hero-overlay:
-    linear-gradient(180deg,
-      oklch(11% 0.008 250 / .5) 0%,
-      oklch(11% 0.008 250 / 0) 30%,
-      oklch(11% 0.008 250 / 0) 50%,
-      oklch(11% 0.008 250 / .85) 90%,
-      oklch(11% 0.008 250) 100%);
+    radial-gradient(ellipse at 70% 40%, transparent 20%, oklch(11% 0.008 250 / 0.85) 100%),
+    linear-gradient(180deg, oklch(11% 0.008 250 / 0.4) 0%, transparent 25%, transparent 60%, oklch(11% 0.008 250) 100%);
 
   --hero-overlay-mobile:
-    linear-gradient(180deg,
-      oklch(11% 0.008 250 / .35) 0%,
-      oklch(11% 0.008 250 / 0) 25%,
-      oklch(11% 0.008 250 / 0) 45%,
-      oklch(11% 0.008 250 / .9) 85%,
-      oklch(11% 0.008 250) 100%);
+    radial-gradient(ellipse at 85% 30%, transparent 15%, oklch(11% 0.008 250 / 0.95) 100%),
+    linear-gradient(180deg, oklch(11% 0.008 250 / 0.6) 0%, transparent 20%, transparent 50%, oklch(11% 0.008 250) 100%);
 }
 
 /* ===========================================================
@@ -118,20 +110,12 @@
   --noise-opacity: 0.02;
 
   --hero-overlay:
-    linear-gradient(180deg,
-      oklch(8% 0 0 / .55) 0%,
-      oklch(8% 0 0 / 0) 30%,
-      oklch(8% 0 0 / 0) 50%,
-      oklch(8% 0 0 / .88) 90%,
-      oklch(8% 0 0) 100%);
+    radial-gradient(ellipse at 70% 40%, transparent 20%, oklch(8% 0 0 / 0.85) 100%),
+    linear-gradient(180deg, oklch(8% 0 0 / 0.4) 0%, transparent 25%, transparent 60%, oklch(8% 0 0) 100%);
 
   --hero-overlay-mobile:
-    linear-gradient(180deg,
-      oklch(8% 0 0 / .35) 0%,
-      oklch(8% 0 0 / 0) 25%,
-      oklch(8% 0 0 / 0) 45%,
-      oklch(8% 0 0 / .92) 85%,
-      oklch(8% 0 0) 100%);
+    radial-gradient(ellipse at 85% 30%, transparent 15%, oklch(8% 0 0 / 0.95) 100%),
+    linear-gradient(180deg, oklch(8% 0 0 / 0.6) 0%, transparent 20%, transparent 50%, oklch(8% 0 0) 100%);
 }
 
 /* ===========================================================
@@ -163,20 +147,12 @@
   --noise-opacity: 0.028;
 
   --hero-overlay:
-    linear-gradient(180deg,
-      oklch(10% 0.015 265 / .55) 0%,
-      oklch(10% 0.015 265 / 0) 30%,
-      oklch(10% 0.015 265 / 0) 50%,
-      oklch(10% 0.015 265 / .88) 90%,
-      oklch(10% 0.015 265) 100%);
+    radial-gradient(ellipse at 70% 40%, transparent 20%, oklch(10% 0.015 265 / 0.85) 100%),
+    linear-gradient(180deg, oklch(10% 0.015 265 / 0.4) 0%, transparent 25%, transparent 60%, oklch(10% 0.015 265) 100%);
 
   --hero-overlay-mobile:
-    linear-gradient(180deg,
-      oklch(10% 0.015 265 / .35) 0%,
-      oklch(10% 0.015 265 / 0) 25%,
-      oklch(10% 0.015 265 / 0) 45%,
-      oklch(10% 0.015 265 / .92) 85%,
-      oklch(10% 0.015 265) 100%);
+    radial-gradient(ellipse at 85% 30%, transparent 15%, oklch(10% 0.015 265 / 0.95) 100%),
+    linear-gradient(180deg, oklch(10% 0.015 265 / 0.6) 0%, transparent 20%, transparent 50%, oklch(10% 0.015 265) 100%);
 }
 
 /* ===========================================================
@@ -194,7 +170,7 @@
   --fg-2: oklch(64% 0.018 245);
   --fg-3: oklch(48% 0.022 245);
 
-  --accent:        oklch(78% 0.15 215);   /* ciano vibrante */
+  --accent:        oklch(78% 0.15 215);
   --accent-2:      oklch(68% 0.18 230);
   --accent-hover:  oklch(82% 0.16 215);
   --accent-soft:   oklch(78% 0.15 215 / .14);
@@ -208,20 +184,12 @@
   --noise-opacity: 0.032;
 
   --hero-overlay:
-    linear-gradient(180deg,
-      oklch(10% 0.025 245 / .55) 0%,
-      oklch(10% 0.025 245 / 0) 30%,
-      oklch(10% 0.025 245 / 0) 50%,
-      oklch(10% 0.025 245 / .88) 90%,
-      oklch(10% 0.025 245) 100%);
+    radial-gradient(ellipse at 70% 40%, transparent 20%, oklch(10% 0.025 245 / 0.85) 100%),
+    linear-gradient(180deg, oklch(10% 0.025 245 / 0.4) 0%, transparent 25%, transparent 60%, oklch(10% 0.025 245) 100%);
 
   --hero-overlay-mobile:
-    linear-gradient(180deg,
-      oklch(10% 0.025 245 / .35) 0%,
-      oklch(10% 0.025 245 / 0) 25%,
-      oklch(10% 0.025 245 / 0) 45%,
-      oklch(10% 0.025 245 / .92) 85%,
-      oklch(10% 0.025 245) 100%);
+    radial-gradient(ellipse at 85% 30%, transparent 15%, oklch(10% 0.025 245 / 0.95) 100%),
+    linear-gradient(180deg, oklch(10% 0.025 245 / 0.6) 0%, transparent 20%, transparent 50%, oklch(10% 0.025 245) 100%);
 }
 
 /* ===========================================================
@@ -230,18 +198,18 @@
    Mesma família de paleta, mas executada com refinamento.
    =========================================================== */
 [data-theme="heritage"] {
-  --bg-0: oklch(10% 0.008 60);          /* preto com pitada quente */
+  --bg-0: oklch(10% 0.008 60);
   --bg-1: oklch(14% 0.012 65);
   --bg-2: oklch(19% 0.015 70);
   --bg-3: oklch(25% 0.018 70);
 
-  --fg-0: oklch(97% 0.015 85);          /* off-white quente, papel envelhecido */
+  --fg-0: oklch(97% 0.015 85);
   --fg-1: oklch(85% 0.02 80);
   --fg-2: oklch(62% 0.025 75);
   --fg-3: oklch(45% 0.03 75);
 
-  --accent:        oklch(78% 0.13 85);   /* dourado champagne refinado */
-  --accent-2:      oklch(68% 0.15 75);   /* dourado mais profundo */
+  --accent:        oklch(78% 0.13 85);
+  --accent-2:      oklch(68% 0.15 75);
   --accent-hover:  oklch(83% 0.14 85);
   --accent-soft:   oklch(78% 0.13 85 / .12);
   --accent-glow:   oklch(78% 0.13 85 / .3);
@@ -254,22 +222,13 @@
   --noise-opacity: 0.03;
 
   --hero-overlay:
-    linear-gradient(180deg,
-      oklch(10% 0.008 60 / .55) 0%,
-      oklch(10% 0.008 60 / 0) 30%,
-      oklch(10% 0.008 60 / 0) 50%,
-      oklch(10% 0.008 60 / .88) 90%,
-      oklch(10% 0.008 60) 100%);
+    radial-gradient(ellipse at 70% 40%, transparent 20%, oklch(10% 0.008 60 / 0.85) 100%),
+    linear-gradient(180deg, oklch(10% 0.008 60 / 0.4) 0%, transparent 25%, transparent 60%, oklch(10% 0.008 60) 100%);
 
   --hero-overlay-mobile:
-    linear-gradient(180deg,
-      oklch(10% 0.008 60 / .35) 0%,
-      oklch(10% 0.008 60 / 0) 25%,
-      oklch(10% 0.008 60 / 0) 45%,
-      oklch(10% 0.008 60 / .92) 85%,
-      oklch(10% 0.008 60) 100%);
+    radial-gradient(ellipse at 85% 30%, transparent 15%, oklch(10% 0.008 60 / 0.95) 100%),
+    linear-gradient(180deg, oklch(10% 0.008 60 / 0.6) 0%, transparent 20%, transparent 50%, oklch(10% 0.008 60) 100%);
 }
-
 
 /* ============================================
    VIEW TRANSITIONS (troca de tema cinemática)
