@@ -5,14 +5,15 @@
  */
 (() => {
   const STORAGE_KEY = 'ygor-theme';
-  const VALID = ['obsidian', 'steel', 'abyss', 'storm'];
-  const DEFAULT = 'obsidian';
-  const NAMES = {
-    obsidian: 'Obsidian',
-    steel: 'Steel',
-    abyss: 'Abyss',
-    storm: 'Storm',
-  };
+  const VALID = ['obsidian', 'steel', 'abyss', 'storm', 'heritage'];
+const DEFAULT = 'obsidian';
+const NAMES = {
+  obsidian: 'Obsidian',
+  steel: 'Steel',
+  abyss: 'Abyss',
+  storm: 'Storm',
+  heritage: 'Heritage',
+};
 
   const root = document.documentElement;
   const switcher = document.querySelector('.theme-switcher');
@@ -66,11 +67,13 @@
       const meta = document.querySelector('meta[name="theme-color"]');
       if (meta) {
         const colors = {
-          obsidian: '#0A0C10',
-          steel:    '#0A0A0A',
-          abyss:    '#0C0E16',
-          storm:    '#0A0E1A',
-        };
+  obsidian: '#0A0C10',
+  steel:    '#0A0A0A',
+  abyss:    '#0C0E16',
+  storm:    '#0A0E1A',
+  heritage: '#0A0807',
+};
+
         meta.setAttribute('content', colors[theme] || colors.obsidian);
       }
 
