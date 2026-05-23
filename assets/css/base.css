@@ -1,5 +1,5 @@
 /* ============================================
-   RESET + BASE
+   RESET + BASE (BLINDADO CONTRA BUGS)
    ============================================ */
 
 *, *::before, *::after {
@@ -12,21 +12,14 @@ html {
   scroll-padding-top: var(--nav-h);
 }
 
-/* Lenis controla o scroll — desabilitamos scroll-behavior nativo */
+/* Lenis controla o scroll */
 html.lenis,
 html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .lenis.lenis-stopped { overflow: hidden; }
 
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after {
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-  }
-}
+/* TRAVA DE REDUÇÃO DE ANIMAÇÕES REMOVIDA DAQUI! */
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -57,7 +50,6 @@ a { color: inherit; text-decoration: none; }
   color: var(--accent-ink);
 }
 
-/* Scrollbar (fallback p/ quando Lenis não está ativo) */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg-0); }
 ::-webkit-scrollbar-thumb {
@@ -85,32 +77,21 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--fg-0);
 }
 
+/* O SEGREDO DO TEXTO QUE NÃO SOME: Cor sólida e sem máscaras! */
 h1 em, h2 em, h3 em {
   font-style: italic;
   font-variation-settings: 'opsz' 144, 'SOFT' 100;
   font-weight: 300;
   position: relative;
-  /* Cor sólida padrão: resolve 100% o bug de sumir no mobile */
   color: var(--accent); 
-}
-
-/* O gradiente metálico só é ativado em telas maiores que tablet,
-   onde os navegadores aguentam o tranco do GSAP + Clip-text */
-@media (min-width: 768px) {
-  h1 em, h2 em, h3 em {
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-  }
+  display: inline-block;
 }
 
 p { color: var(--fg-1); }
 strong { color: var(--fg-0); font-weight: 500; }
 
 /* ============================================
-   CONTAINERS
+   CONTAINERS E UTILITÁRIOS
    ============================================ */
 
 .container {
@@ -125,10 +106,6 @@ strong { color: var(--fg-0); font-weight: 500; }
 @media (min-width: 768px) {
   .container { padding: 0 var(--s-7); }
 }
-
-/* ============================================
-   UTILITÁRIOS DE SEÇÃO
-   ============================================ */
 
 .eyebrow {
   display: inline-flex;
@@ -182,7 +159,7 @@ strong { color: var(--fg-0); font-weight: 500; }
 .section-head--center .eyebrow { justify-content: center; }
 
 /* ============================================
-   NOISE
+   NOISE, SCROLL PROGRESS & LOADER
    ============================================ */
 .noise {
   position: fixed; inset: 0;
@@ -193,9 +170,6 @@ strong { color: var(--fg-0); font-weight: 500; }
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ============================================
-   SCROLL PROGRESS BAR
-   ============================================ */
 .scroll-progress {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -214,9 +188,6 @@ strong { color: var(--fg-0); font-weight: 500; }
   transition: width 0.1s linear;
 }
 
-/* ============================================
-   LOADER
-   ============================================ */
 .loader {
   position: fixed; inset: 0;
   z-index: 10000;
