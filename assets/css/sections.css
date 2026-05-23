@@ -22,14 +22,22 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  /* Subtle ken-burns animation */
-  animation: kenBurns 20s var(--ease-soft) infinite alternate;
-  transform-origin: center 30%;
+  /* Animação fluida de câmera Ken Burns */
+  animation: kenBurns 20s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+  transform-origin: 65% 30%;
 }
 
 @keyframes kenBurns {
-  0%   { transform: scale(1.04); }
-  100% { transform: scale(1.0); }
+  0%   { transform: scale(1.0); }
+  100% { transform: scale(1.08); }
+}
+
+@media (max-width: 767px) {
+  .hero__media img {
+    /* MOBILE: Foca no Ygor e cria um movimento fluido a partir do rosto dele */
+    object-position: 82% 20%;
+    transform-origin: 82% 20%;
+  }
 }
 
 .hero__overlay {
@@ -44,7 +52,7 @@
   .hero__overlay { background: var(--hero-overlay-mobile); }
 }
 
-/* Conteúdo HERO — duas zonas: TOP (kicker) e BOTTOM (tagline + CTA) */
+/* Conteúdo HERO */
 .hero__content {
   position: relative;
   z-index: 2;
@@ -103,7 +111,7 @@
   100% { transform: scale(2.4); opacity: 0; }
 }
 
-/* ===== HERO BOTTOM — zona segura (abaixo da figura do Ygor) ===== */
+/* HERO BOTTOM */
 .hero__bottom {
   max-width: 720px;
 }
@@ -122,14 +130,17 @@
 .hero__tagline em {
   font-style: italic;
   font-variation-settings: 'opsz' 144, 'SOFT' 100;
-  color: var(--accent);
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  color: var(--accent); /* Cor blindada no Mobile */
+}
+
+@media (min-width: 768px) {
+  .hero__tagline em {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+  }
 }
 
 .hero__actions {
@@ -145,7 +156,6 @@
   }
 }
 
-/* ===== SCROLL HINT ===== */
 .hero__scroll {
   position: absolute;
   bottom: var(--s-7);
@@ -197,7 +207,6 @@
   text-transform: uppercase;
 }
 
-/* ===== HERO MARQUEE (border inferior) ===== */
 .hero__marquee {
   position: absolute;
   bottom: 0;
