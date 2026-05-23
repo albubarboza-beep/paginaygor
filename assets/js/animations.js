@@ -1,11 +1,11 @@
 /**
  * animations.js
- * BLINDADO: Animações GSAP forçadas (ignora configurações do Windows que travam animações).
+ * Orquestração GSAP + SplitType + ScrollTrigger FORÇADA (Ignora travas do SO).
  */
 (() => {
-  const start = () => {
-    if (!window.gsap || !window.ScrollTrigger) {
-      requestAnimationFrame(start);
+  const boot = () => {
+    if (!window.gsap) {
+      requestAnimationFrame(boot);
       return;
     }
 
@@ -13,147 +13,141 @@
     const ST = window.ScrollTrigger;
     const SPT = window.SplitType;
 
-    gsap.registerPlugin(ST);
+    if (ST) gsap.registerPlugin(ST);
+
+    // TRAVA DE REDUÇÃO DE ANIMAÇÕES REMOVIDA DAQUI! O GSAP vai rodar sempre.
 
     // ============================================
-    // 1. TEXT SPLITTING (Corta os textos para animar)
+    // SPLIT TYPE 
     // ============================================
     if (SPT) {
       document.querySelectorAll('[data-split]').forEach((el) => {
-        new SPT(el, { types: 'words, chars' });
-        el.classList.add('split-ready');
+        try {
+          new SPT(el, { types: 'words, chars' });
+          el.classList.add('split-ready');
+        } catch (e) { el.classList.add('split-ready'); }
       });
 
       document.querySelectorAll('[data-split-lines]').forEach((el) => {
-        new SPT(el, { types: 'lines, words' });
+        try {
+          new SPT(el, { types: 'lines, words' });
+          el.classList.add('split-ready');
+          el.querySelectorAll('.line').forEach((line) => {
+            const inner = document.createElement('span');
+            inner.className = 'line__inner';
+            inner.style.display = 'inline-block';
+            while (line.firstChild) inner.appendChild(line.firstChild);
+            line.appendChild(inner);
+          });
+        } catch (e) { el.classList.add('split-ready'); }
+      });
+    } else {
+      document.querySelectorAll('[data-split], [data-split-lines]').forEach((el) => {
         el.classList.add('split-ready');
-        el.querySelectorAll('.line').forEach((line) => {
-          const inner = document.createElement('span');
-          inner.className = 'line__inner';
-          inner.style.display = 'inline-block';
-          while (line.firstChild) inner.appendChild(line.firstChild);
-          line.appendChild(inner);
+      });
+    }
+
+    // ============================================
+    // HERO ENTRANCE
+    // ============================================
+    try {
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        const tl = gsap.timeline({ defaults: { ease: 'expo.out' }, delay: 0.3 });
+
+        const kicker = hero.querySelector('.hero__kicker');
+        const chars = hero.querySelectorAll('[data-split] .char');
+        const actions = hero.querySelectorAll('.hero__actions > *');
+        const scroll = hero.querySelector('.hero__scroll');
+        const marquee = hero.querySelector('.hero__marquee');
+
+        if (kicker) tl.from(kicker, { opacity: 0, y: 16, duration: 0.9 });
+        
+        if (chars && chars.length > 0) {
+          tl.from(chars, { yPercent: 110, opacity: 0, duration: 1.1, stagger: 0.025 }, kicker ? '-=0.5' : 0);
+        }
+
+        if (actions && actions.length > 0) {
+          tl.from(actions, { opacity: 0, y: 20, duration: 0.9, stagger: 0.1 }, '-=0.7');
+        }
+
+        if (scroll) tl.from(scroll, { opacity: 0, y: 10, duration: 0.8 }, '-=0.5');
+        if (marquee) tl.from(marquee, { opacity: 0, duration: 0.8 }, '-=0.6');
+
+        hero.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-visible'));
+      }
+    } catch (e) {}
+
+    // ============================================
+    // SPLIT LINES 
+    // ============================================
+    if (ST) {
+      document.querySelectorAll('[data-split-lines]').forEach((el) => {
+        const lines = el.querySelectorAll('.line__inner');
+        if (!lines.length) return;
+        gsap.from(lines, {
+          yPercent: 105, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.1,
+          scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none', once: true }
         });
       });
     }
 
     // ============================================
-    // 2. HERO ENTRANCE (Animação de entrada principal)
+    // GENERIC REVEAL
     // ============================================
-    const hero = document.querySelector('.hero');
-    if (hero) {
-      const tl = gsap.timeline({ defaults: { ease: 'expo.out' }, delay: 0.2 });
-
-      const topElements = hero.querySelectorAll('.hero__top [data-reveal]');
-      const bottomElements = hero.querySelectorAll('.hero__bottom [data-reveal]');
-
-      if (topElements.length) {
-        tl.fromTo(topElements, 
-          { opacity: 0, y: 30 }, 
-          { opacity: 1, y: 0, duration: 1.2, stagger: 0.15 }
+    if (ST) {
+      gsap.utils.toArray('[data-reveal]').forEach((el) => {
+        if (el.closest('.hero')) { el.classList.add('is-visible'); return; }
+        const delay = parseFloat(el.dataset.revealDelay || '0');
+        gsap.fromTo(el,
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 1, delay, ease: 'expo.out',
+            scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none', once: true },
+            onComplete: () => el.classList.add('is-visible') }
         );
-      }
-
-      if (bottomElements.length) {
-        tl.fromTo(bottomElements, 
-          { opacity: 0, y: 30 }, 
-          { opacity: 1, y: 0, duration: 1.2, stagger: 0.15 }, 
-          "-=0.8" // Começa antes do topo terminar
-        );
-      }
-
-      // Marca como visível para evitar bugs do CSS
-      setTimeout(() => {
-        hero.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('is-visible'));
-      }, 2000);
+      });
     }
 
     // ============================================
-    // 3. REVEAL SCROLL (Elementos aparecem ao rolar)
+    // COUNTERS 
     // ============================================
-    gsap.utils.toArray('[data-reveal]').forEach((el) => {
-      if (el.closest('.hero')) return; // Pula o Hero que já foi animado
-
-      const delay = parseFloat(el.dataset.revealDelay || '0');
-
-      gsap.fromTo(el,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1.2,
-          delay: delay,
-          ease: 'expo.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
-            once: true,
-          },
-          onComplete: () => el.classList.add('is-visible')
-        }
-      );
-    });
-
-    // ============================================
-    // 4. ANIMAR LINHAS DE TEXTO NO SCROLL
-    // ============================================
-    gsap.utils.toArray('[data-split-lines]').forEach((el) => {
-      const lines = el.querySelectorAll('.line__inner');
-      if (!lines.length) return;
-
-      gsap.fromTo(lines, 
-        { yPercent: 105, opacity: 0 },
-        {
-          yPercent: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: 'expo.out',
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 85%',
-            toggleActions: 'play none none none',
-            once: true,
-          }
-        }
-      );
-    });
-
-    // ============================================
-    // 5. NÚMEROS ANIMADOS (Contadores)
-    // ============================================
-    document.querySelectorAll('[data-counter]').forEach((el) => {
-      const target = parseInt(el.dataset.counter, 10);
-      if (isNaN(target)) return;
-
-      const obj = { val: 0 };
-      gsap.to(obj, {
-        val: target,
-        duration: 2.5,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 90%',
-          once: true,
-        },
-        onUpdate: () => {
-          el.textContent = Math.round(obj.val).toLocaleString('pt-BR');
-        }
+    if (ST) {
+      document.querySelectorAll('[data-counter]').forEach((el) => {
+        const target = parseInt(el.dataset.counter, 10);
+        if (isNaN(target)) return;
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: target, duration: 2, ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+          onUpdate: () => { el.textContent = Math.round(obj.val).toLocaleString('pt-BR'); }
+        });
       });
-    });
+    }
 
     // ============================================
-    // 6. Atualiza o ScrollTrigger quando o tema mudar
+    // HERO PARALLAX
     // ============================================
-    window.addEventListener('themechange', () => {
-      setTimeout(() => ST.refresh(), 200);
-    });
+    if (ST) {
+      const heroImg = document.querySelector('.hero__media img');
+      if (heroImg) {
+        gsap.to(heroImg, {
+          yPercent: 12, ease: 'none',
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1 }
+        });
+      }
+
+      const tagline = document.querySelector('.hero__tagline');
+      if (tagline) {
+        gsap.to(tagline, {
+          y: -40, opacity: 0.6, ease: 'none',
+          scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom 60%', scrub: 1 }
+        });
+      }
+
+      window.addEventListener('themechange', () => { setTimeout(() => ST.refresh(), 200); });
+    }
   };
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', start);
-  } else {
-    start();
-  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); } 
+  else { boot(); }
 })();
