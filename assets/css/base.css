@@ -90,32 +90,19 @@ h1 em, h2 em, h3 em {
   font-variation-settings: 'opsz' 144, 'SOFT' 100;
   font-weight: 300;
   position: relative;
-  /* Gradient text with robust fallback */
-  color: var(--accent);
-  /* Apply gradient on top — browsers that support it will use it */
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  /* Ensure inline-block for background-clip to work reliably */
-  display: inline-block;
-  /* Fix for mobile paint issues */
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+  /* Cor sólida padrão: resolve 100% o bug de sumir no mobile */
+  color: var(--accent); 
 }
 
-/* Force repaint on mobile to prevent black text rendering */
-@media (max-width: 768px) {
+/* O gradiente metálico só é ativado em telas maiores que tablet,
+   onde os navegadores aguentam o tranco do GSAP + Clip-text */
+@media (min-width: 768px) {
   h1 em, h2 em, h3 em {
-    /* Ensure gradient text is painted correctly on mobile WebKit */
-    -webkit-text-fill-color: transparent;
     background: linear-gradient(135deg, var(--accent), var(--accent-2));
     -webkit-background-clip: text;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
     display: inline-block;
-    /* GPU acceleration forces repaint */
-    transform: translateZ(0);
-    will-change: contents;
   }
 }
 
