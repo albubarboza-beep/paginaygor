@@ -6,16 +6,23 @@
  * - Reveal generic com stagger
  * - Counter animations
  * - Parallax sutil no hero
+ *
+ * NOTA: Cada sistema de animação é independente para evitar que
+ * a falha de um quebre os demais (defensive animation architecture).
  */
 (() => {
   const boot = () => {
-    if (!window.gsap || !window.SplitType) {
+    /* ── Aguarda dependências ── */
+    if (!window.gsap) {
       requestAnimationFrame(boot);
       return;
     }
 
-    const { gsap, ScrollTrigger, SplitType } = window;
-    if (ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+    const { gsap } = window;
+    const ST = window.ScrollTrigger;
+    const SPT = window.SplitType;
+
+    if (ST) gsap.registerPlugin(ST);
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -28,82 +35,140 @@
     // ============================================
     // SPLIT TYPE — prepara textos para animação
     // ============================================
-    const splits = {};
-
-    document.querySelectorAll('[data-split]').forEach((el) => {
-      splits[el.dataset.splitId || Math.random()] = new SplitType(el, { types: 'words, chars' });
-      el.classList.add('split-ready');
-    });
-
-    document.querySelectorAll('[data-split-lines]').forEach((el) => {
-      new SplitType(el, { types: 'lines, words' });
-      el.classList.add('split-ready');
-
-      // wrap each line for overflow:hidden trick
-      el.querySelectorAll('.line').forEach((line) => {
-        const inner = document.createElement('span');
-        inner.className = 'line__inner';
-        inner.style.display = 'inline-block';
-        while (line.firstChild) inner.appendChild(line.firstChild);
-        line.appendChild(inner);
-      });
-    });
-
-    // ============================================
-    // HERO ENTRANCE
-    // ============================================
-    const hero = document.querySelector('.hero');
-    if (hero) {
-      const tl = gsap.timeline({
-        defaults: { ease: 'expo.out' },
-        delay: 0.3, // dá tempo do loader sair
+    if (SPT) {
+      document.querySelectorAll('[data-split]').forEach((el) => {
+        try {
+          new SPT(el, { types: 'words, chars' });
+          el.classList.add('split-ready');
+        } catch (e) {
+          el.classList.add('split-ready');
+        }
       });
 
-      tl.from(hero.querySelector('.hero__kicker'), {
-        opacity: 0, y: 16, duration: 0.9,
-      })
-      .from(hero.querySelectorAll('[data-split] .char'), {
-        yPercent: 110,
-        opacity: 0,
-        duration: 1.1,
-        stagger: 0.025,
-      }, '-=0.5')
-      .from(hero.querySelectorAll('.hero__actions > *'), {
-        opacity: 0, y: 20, duration: 0.9, stagger: 0.1,
-      }, '-=0.7')
-      .from(hero.querySelector('.hero__scroll'), {
-        opacity: 0, y: 10, duration: 0.8,
-      }, '-=0.5')
-      .from(hero.querySelector('.hero__marquee'), {
-        opacity: 0, duration: 0.8,
-      }, '-=0.6');
+      document.querySelectorAll('[data-split-lines]').forEach((el) => {
+        try {
+          new SPT(el, { types: 'lines, words' });
+          el.classList.add('split-ready');
+
+          // wrap each line for overflow:hidden trick
+          el.querySelectorAll('.line').forEach((line) => {
+            const inner = document.createElement('span');
+            inner.className = 'line__inner';
+            inner.style.display = 'inline-block';
+            while (line.firstChild) inner.appendChild(line.firstChild);
+            line.appendChild(inner);
+          });
+        } catch (e) {
+          el.classList.add('split-ready');
+        }
+      });
+    } else {
+      // SplitType não carregou — garante que o texto fique visível
+      document.querySelectorAll('[data-split], [data-split-lines]').forEach((el) => {
+        el.classList.add('split-ready');
+      });
+    }
+
+    // ============================================
+    // HERO ENTRANCE (isolado — não afeta outros)
+    // ============================================
+    try {
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        const tl = gsap.timeline({
+          defaults: { ease: 'expo.out' },
+          delay: 0.3,
+        });
+
+        const kicker = hero.querySelector('.hero__kicker');
+        const chars = hero.querySelectorAll('[data-split] .char');
+        const actions = hero.querySelectorAll('.hero__actions > *');
+        const scroll = hero.querySelector('.hero__scroll');
+        const marquee = hero.querySelector('.hero__marquee');
+
+        // Kicker
+        if (kicker) {
+          tl.from(kicker, { opacity: 0, y: 16, duration: 0.9 });
+        }
+
+        // Tagline chars (SplitType)
+        if (chars && chars.length > 0) {
+          tl.from(chars, {
+            yPercent: 110,
+            opacity: 0,
+            duration: 1.1,
+            stagger: 0.025,
+          }, kicker ? '-=0.5' : 0);
+        }
+
+        // Action buttons
+        if (actions && actions.length > 0) {
+          tl.from(actions, {
+            opacity: 0, y: 20, duration: 0.9, stagger: 0.1,
+          }, '-=0.7');
+        }
+
+        // Scroll hint
+        if (scroll) {
+          tl.from(scroll, {
+            opacity: 0, y: 10, duration: 0.8,
+          }, '-=0.5');
+        }
+
+        // Marquee
+        if (marquee) {
+          tl.from(marquee, {
+            opacity: 0, duration: 0.8,
+          }, '-=0.6');
+        }
+
+        // Marcar hero reveals como visíveis (já animados pela timeline)
+        hero.querySelectorAll('[data-reveal]').forEach((el) => {
+          el.classList.add('is-visible');
+        });
+      }
+    } catch (e) {
+      // Hero falhou — não quebra o resto
+      const hero = document.querySelector('.hero');
+      if (hero) {
+        hero.querySelectorAll('[data-reveal]').forEach((el) => {
+          el.classList.add('is-visible');
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+      }
     }
 
     // ============================================
     // SPLIT LINES — anima por linha em scroll
     // ============================================
-    document.querySelectorAll('[data-split-lines]').forEach((el) => {
-      const lines = el.querySelectorAll('.line__inner');
-      gsap.from(lines, {
-        yPercent: 105,
-        opacity: 0,
-        duration: 1.1,
-        ease: 'expo.out',
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 85%',
-          toggleActions: 'play none none none',
-          once: true,
-        },
+    if (ST) {
+      document.querySelectorAll('[data-split-lines]').forEach((el) => {
+        const lines = el.querySelectorAll('.line__inner');
+        if (!lines.length) return;
+
+        gsap.from(lines, {
+          yPercent: 105,
+          opacity: 0,
+          duration: 1.1,
+          ease: 'expo.out',
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+            once: true,
+          },
+        });
       });
-    });
+    }
 
     // ============================================
-    // GENERIC REVEAL
+    // GENERIC REVEAL — independente do hero
     // ============================================
-    if (ScrollTrigger) {
+    if (ST) {
       gsap.utils.toArray('[data-reveal]').forEach((el) => {
+        // Pula elementos do hero — já animados pela timeline
         if (el.closest('.hero')) {
           el.classList.add('is-visible');
           return;
@@ -129,10 +194,18 @@
           }
         );
       });
+    } else {
+      // Sem ScrollTrigger — mostra tudo diretamente
+      document.querySelectorAll('[data-reveal]').forEach((el) => {
+        el.classList.add('is-visible');
+      });
+    }
 
-      // ============================================
-      // COUNTERS — anima números das estatísticas e planos
-      // ============================================
+    // ============================================
+    // COUNTERS — anima números (estatísticas e planos)
+    // Funciona independentemente de tudo acima
+    // ============================================
+    if (ST) {
       document.querySelectorAll('[data-counter]').forEach((el) => {
         const target = parseInt(el.dataset.counter, 10);
         if (isNaN(target)) return;
@@ -144,7 +217,7 @@
           ease: 'power3.out',
           scrollTrigger: {
             trigger: el,
-            start: 'top 85%',
+            start: 'top 90%',
             once: true,
           },
           onUpdate: () => {
@@ -152,10 +225,20 @@
           },
         });
       });
+    } else {
+      // Fallback: mostra os números finais diretamente
+      document.querySelectorAll('[data-counter]').forEach((el) => {
+        const target = parseInt(el.dataset.counter, 10);
+        if (!isNaN(target)) {
+          el.textContent = target.toLocaleString('pt-BR');
+        }
+      });
+    }
 
-      // ============================================
-      // HERO PARALLAX (imagem + overlay)
-      // ============================================
+    // ============================================
+    // HERO PARALLAX (imagem + overlay)
+    // ============================================
+    if (ST) {
       const heroImg = document.querySelector('.hero__media img');
       if (heroImg) {
         gsap.to(heroImg, {
@@ -170,7 +253,7 @@
         });
       }
 
-      // Tagline sutil parallax
+      // Tagline parallax
       const tagline = document.querySelector('.hero__tagline');
       if (tagline) {
         gsap.to(tagline, {
@@ -190,11 +273,12 @@
       // Refresh ScrollTrigger quando tema muda
       // ============================================
       window.addEventListener('themechange', () => {
-        setTimeout(() => ScrollTrigger.refresh(), 200);
+        setTimeout(() => ST.refresh(), 200);
       });
     }
   };
 
+  /* ── Boot seguro ── */
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else {

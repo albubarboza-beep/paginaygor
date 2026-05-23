@@ -2,6 +2,9 @@
  * lenis-init.js
  * Smooth scroll com Lenis (usado por 90% dos sites Awwwards SOTD).
  * Integra com GSAP ScrollTrigger.
+ *
+ * MELHORIA: Integração mais robusta, evita RAF duplo
+ * quando GSAP ticker assume controle.
  */
 (() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -16,24 +19,34 @@
     wheelMultiplier: 1,
   });
 
-  // RAF loop
+  // RAF loop (fallback — substituído quando GSAP assume)
+  let rafId = null;
   function raf(time) {
     lenis.raf(time);
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
   }
-  requestAnimationFrame(raf);
+  rafId = requestAnimationFrame(raf);
 
   // Integração com GSAP ScrollTrigger (sincronia)
-  const tryIntegrate = () => {
+  const tryIntegrate = (attempts) => {
+    attempts = attempts || 0;
+    if (attempts > 60) return; // desiste após 3s
+
     if (window.gsap && window.ScrollTrigger) {
+      // Para o RAF manual — GSAP ticker cuida disso agora
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+
       lenis.on('scroll', window.ScrollTrigger.update);
       window.gsap.ticker.add((time) => lenis.raf(time * 1000));
       window.gsap.ticker.lagSmoothing(0);
     } else {
-      setTimeout(tryIntegrate, 50);
+      setTimeout(() => tryIntegrate(attempts + 1), 50);
     }
   };
-  tryIntegrate();
+  tryIntegrate(0);
 
   // Expor para outros módulos
   window.lenis = lenis;

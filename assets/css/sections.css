@@ -122,10 +122,14 @@
 .hero__tagline em {
   font-style: italic;
   font-variation-settings: 'opsz' 144, 'SOFT' 100;
+  color: var(--accent);
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .hero__actions {
@@ -509,6 +513,7 @@
 
 .resultado__body p em {
   color: var(--accent);
+  -webkit-text-fill-color: var(--accent);
   font-style: italic;
 }
 
@@ -743,10 +748,14 @@
 }
 
 .plano--featured .plano__value {
+  color: var(--accent);
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  display: inline-block;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 .plano__period {
@@ -913,6 +922,7 @@
 
 .faq-item__body p em {
   color: var(--accent);
+  -webkit-text-fill-color: var(--accent);
   font-style: italic;
 }
 
