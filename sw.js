@@ -4,7 +4,7 @@
  * Estratégia: Network First com Fallback para Cache.
  */
 
-const CACHE_NAME = 'ygor-premium-v1.0.0';
+const CACHE_NAME = 'ygor-premium-v1.0.1';
 
 // Arquivos críticos para o primeiro carregamento
 const urlsToCache = [
