@@ -3,15 +3,15 @@
  * Loader, navbar, mobile menu, FAQ, scroll progress.
  */
 (() => {
-  // ============ LOADER ============
+  // ============ LOADER (Com Trava de Segurança) ============
   const loader = document.getElementById('loader');
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      loader?.classList.add('is-done');
-    }, 400);
-  });
+  const hideLoader = () => loader?.classList.add('is-done');
+  
+  // Libera a página quando carregar ou força a liberação após 1.5s
+  window.addEventListener('load', () => setTimeout(hideLoader, 200));
+  setTimeout(hideLoader, 1500);
 
-  // ============ NAVBAR scrolled ============
+  // ============ NAVBAR SCROLLED ============
   const nav = document.getElementById('nav');
   if (nav) {
     let ticking = false;
@@ -62,7 +62,7 @@
     });
   }
 
-  // ============ FAQ — single open ============
+  // ============ FAQ — SINGLE OPEN ============
   const faqItems = document.querySelectorAll('.faq-item');
   faqItems.forEach((item) => {
     item.addEventListener('toggle', () => {
