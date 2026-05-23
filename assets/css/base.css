@@ -97,6 +97,19 @@ h1 em, h2 em, h3 em {
   position: relative;
 }
 
+/* ⬇️ CORREÇÃO DO GRADIENTE NO MOBILE ADICIONADA AQUI ⬇️ */
+@media (max-width: 768px) {
+  h1 em, h2 em, h3 em {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    display: inline-block;
+  }
+}
+/* ⬆️ ----------------------------------------------- ⬆️ */
+
 p { color: var(--fg-1); }
 strong { color: var(--fg-0); font-weight: 500; }
 
