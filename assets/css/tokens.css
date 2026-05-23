@@ -235,3 +235,49 @@
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
 }
+
+/* ===========================================================
+   HERITAGE · Dourado Champagne (homenagem refinada)
+   Para o cliente comparar com o projeto original.
+   Mesma família de paleta, mas executada com refinamento.
+   =========================================================== */
+[data-theme="heritage"] {
+  --bg-0: oklch(10% 0.008 60);          /* preto com pitada quente */
+  --bg-1: oklch(14% 0.012 65);
+  --bg-2: oklch(19% 0.015 70);
+  --bg-3: oklch(25% 0.018 70);
+
+  --fg-0: oklch(97% 0.015 85);          /* off-white quente, papel envelhecido */
+  --fg-1: oklch(85% 0.02 80);
+  --fg-2: oklch(62% 0.025 75);
+  --fg-3: oklch(45% 0.03 75);
+
+  --accent:        oklch(78% 0.13 85);   /* dourado champagne refinado */
+  --accent-2:      oklch(68% 0.15 75);   /* dourado mais profundo */
+  --accent-hover:  oklch(83% 0.14 85);
+  --accent-soft:   oklch(78% 0.13 85 / .12);
+  --accent-glow:   oklch(78% 0.13 85 / .3);
+  --accent-ink:    oklch(10% 0.008 60);
+
+  --border:        oklch(100% 0.02 80 / .09);
+  --border-strong: oklch(100% 0.02 80 / .17);
+
+  --grid-line:     oklch(100% 0.02 80 / .04);
+  --noise-opacity: 0.03;
+
+  --hero-overlay:
+    linear-gradient(180deg,
+      oklch(10% 0.008 60 / .55) 0%,
+      oklch(10% 0.008 60 / 0) 30%,
+      oklch(10% 0.008 60 / 0) 50%,
+      oklch(10% 0.008 60 / .88) 90%,
+      oklch(10% 0.008 60) 100%);
+
+  --hero-overlay-mobile:
+    linear-gradient(180deg,
+      oklch(10% 0.008 60 / .35) 0%,
+      oklch(10% 0.008 60 / 0) 25%,
+      oklch(10% 0.008 60 / 0) 45%,
+      oklch(10% 0.008 60 / .92) 85%,
+      oklch(10% 0.008 60) 100%);
+}
