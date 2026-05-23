@@ -665,18 +665,13 @@
   <script src="assets/js/magnetic.js"></script>
   <script src="assets/js/animations.js"></script>
 
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js').then(registration => {
-          console.log('Service Worker ativo:', registration.scope);
-        }).catch(error => {
-          console.log('Falha no Service Worker:', error);
-        });
+        navigator.serviceWorker.register('sw.js');
       });
     }
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
