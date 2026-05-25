@@ -1,73 +1,74 @@
 /**
  * sw.js
- * Service Worker para performance e cache inteligente.
- * Estratégia: Network First com Fallback para Cache.
+ * Service Worker — Network First com cache fallback.
+ * Paths relativos para compatibilidade com qualquer deploy.
  */
 
-const CACHE_NAME = 'ygor-premium-v1.0.2';
+const CACHE_NAME = 'ygor-premium-v1.4.0';
 
-// Arquivos críticos para o primeiro carregamento
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/assets/css/tokens.css',
-  '/assets/css/base.css',
-  '/assets/css/components.css',
-  '/assets/css/sections.css',
-  '/assets/css/animations.css',
-  '/assets/js/lenis-init.js',
-  '/assets/js/theme-switcher.js',
-  '/assets/js/interactions.js',
-  '/assets/js/cursor.js',
-  '/assets/js/magnetic.js',
-  '/assets/js/animations.js'
+  './',
+  './index.html',
+  './assets/css/tokens.css',
+  './assets/css/base.css',
+  './assets/css/components.css',
+  './assets/css/sections.css',
+  './assets/css/animations.css',
+  './assets/js/lenis-init.js',
+  './assets/js/theme-switcher.js',
+  './assets/js/interactions.js',
+  './assets/js/cursor.js',
+  './assets/js/magnetic.js',
+  './assets/js/animations.js',
+  './assets/js/carousel.js',
+  './img/ygorimagem.png',
+  './img/igormobile.png'
 ];
 
-// INSTALAÇÃO: Faz o cache dos arquivos principais e força a instalação imediata
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // Não espera as abas fecharem para atualizar
+  self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
   );
 });
 
-// ATIVAÇÃO: Limpa qualquer cache de uma versão antiga (se houver)
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    caches.keys().then((names) =>
+      Promise.all(names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n)))
+    )
   );
-  self.clients.claim(); // Assume o controle da página imediatamente
+  self.clients.claim();
 });
 
-// FETCH: Tenta buscar na internet primeiro (para garantir site atualizado).
-// Se falhar (offline), puxa do Cache instantaneamente.
 self.addEventListener('fetch', (event) => {
-  // Ignora requisições que não sejam http/https (como extensões de navegador)
   if (!event.request.url.startsWith('http')) return;
 
+  // CDN resources: cache-first (fontes, libs nao mudam com frequencia)
+  if (event.request.url.includes('cdn.jsdelivr.net') ||
+      event.request.url.includes('fonts.googleapis.com') ||
+      event.request.url.includes('fonts.gstatic.com')) {
+    event.respondWith(
+      caches.match(event.request).then((cached) => {
+        if (cached) return cached;
+        return fetch(event.request).then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          return response;
+        });
+      })
+    );
+    return;
+  }
+
+  // App resources: network-first
   event.respondWith(
     fetch(event.request)
-      .then((networkResponse) => {
-        // Se a internet respondeu, atualizamos o cache com a versão mais nova
-        const responseClone = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
-        });
-        return networkResponse;
+      .then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        return response;
       })
-      .catch(() => {
-        // Se a internet cair, busca no cache
-        return caches.match(event.request);
-      })
+      .catch(() => caches.match(event.request))
   );
 });

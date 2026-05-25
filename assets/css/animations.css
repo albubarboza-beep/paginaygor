@@ -11,19 +11,30 @@
 [data-reveal].is-visible {
   opacity: 1;
   transform: translateY(0);
+  will-change: auto; /* libera GPU layer apos reveal */
 }
 
 /* ============================================
    SPLIT TYPE — preparação
    ============================================ */
 
-[data-split],
-[data-split-lines] {
+/*
+   Split text: esconde SÓ se JS está disponível.
+   Se JS falhar, o texto permanece visível (progressive enhancement).
+*/
+.js-ready [data-split],
+.js-ready [data-split-lines] {
   visibility: hidden;
 }
 
-[data-split].split-ready,
-[data-split-lines].split-ready {
+.js-ready [data-split].split-ready,
+.js-ready [data-split-lines].split-ready {
+  visibility: visible;
+}
+
+/* Fallback: sem .js-ready (JS off/falhou), texto é visível normalmente */
+[data-split]:not(.split-ready),
+[data-split-lines]:not(.split-ready) {
   visibility: visible;
 }
 
@@ -44,47 +55,55 @@
 }
 
 /* ============================================
-   REVEAL — controlado por GSAP, fallback CSS
-   (Trava de redução removida para forçar animações)
+   REDUCED MOTION — versão suave (WCAG 2.3.3)
+   Mantém fades e reveals, remove só motion pesado.
    ============================================ */
 
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(40px);
-  will-change: opacity, transform;
-}
+@media (prefers-reduced-motion: reduce) {
+  /* Reveals: fade instantâneo sem translateY */
+  [data-reveal] {
+    transform: none !important;
+    transition: opacity 0.3s ease !important;
+    will-change: opacity !important;
+  }
 
-[data-reveal].is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+  .char, .word, .line {
+    will-change: opacity !important;
+  }
 
-/* ============================================
-   SPLIT TYPE — preparação
-   ============================================ */
+  /* Animações contínuas pesadas: desliga */
+  .hero__media img {
+    animation: none !important;
+  }
 
-[data-split],
-[data-split-lines] {
-  visibility: hidden;
-}
+  .hero__marquee-track {
+    animation-duration: 60s !important;
+  }
 
-[data-split].split-ready,
-[data-split-lines].split-ready {
-  visibility: visible;
-}
+  .hero__scroll-line::after {
+    animation: none !important;
+  }
 
-.char,
-.word,
-.line {
-  display: inline-block;
-  will-change: transform, opacity;
-}
+  .wa-float::before {
+    animation: none !important;
+  }
 
-[data-split-lines] .line {
-  display: block;
-  overflow: hidden;
-}
+  .hero__kicker-dot::before {
+    animation: none !important;
+  }
 
-[data-split-lines] .line > * {
-  display: inline-block;
+  .cta-final__bg {
+    animation: none !important;
+  }
+
+  /* Loader: mostra direto sem pulso */
+  .loader__mark {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  .loader__bar-fill {
+    animation: none !important;
+    width: 100% !important;
+  }
 }

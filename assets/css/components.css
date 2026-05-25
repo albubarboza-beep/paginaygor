@@ -1,3 +1,10 @@
+/* @property for animated gradient angle */
+@property --grad-angle {
+  syntax: "<angle>";
+  initial-value: 135deg;
+  inherits: false;
+}
+
 /* ============================================
    BOTÕES
    ============================================ */
@@ -5,7 +12,6 @@
 .btn {
   --btn-py: 14px;
   --btn-px: 24px;
-
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -21,12 +27,14 @@
   position: relative;
   overflow: hidden;
   white-space: nowrap;
-  will-change: transform;
   isolation: isolate;
   transition: transform var(--d-base) var(--ease-out-expo),
+              translate var(--d-base) var(--ease-out-expo),
               border-color var(--d-base) var(--ease-soft),
               color var(--d-base) var(--ease-soft);
 }
+
+.btn:hover { will-change: transform; }
 
 /* Animação de fill via clip-path para hover liquid */
 .btn::before {
@@ -50,12 +58,15 @@
 }
 
 .btn--primary::before {
-  background: linear-gradient(135deg, var(--accent-hover), var(--accent));
+  background: linear-gradient(var(--grad-angle), var(--accent-hover), var(--accent));
   clip-path: circle(0% at 50% 50%);
+  transition: clip-path var(--d-slow) var(--ease-out-expo),
+              --grad-angle 0.6s var(--ease-soft);
 }
 
 .btn--primary:hover::before {
   clip-path: circle(150% at 50% 50%);
+  --grad-angle: 315deg;
 }
 
 .btn--primary:hover {
@@ -102,7 +113,7 @@
 .nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 100;
+  z-index: var(--z-nav);
   padding: var(--s-4) 0;
   transition: padding var(--d-base) var(--ease-soft),
               background var(--d-base) var(--ease-soft),
@@ -111,6 +122,7 @@
 
 .nav.scrolled {
   padding: var(--s-3) 0;
+  background: var(--bg-0); /* fallback sólido */
   background: color-mix(in oklch, var(--bg-0) 75%, transparent);
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
@@ -183,16 +195,27 @@
   content: '';
   position: absolute;
   bottom: 4px; left: 0;
-  width: 0; height: 1px;
+  width: 100%; height: 1px;
   background: var(--accent);
-  transition: width var(--d-base) var(--ease-out-expo);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--d-base) var(--ease-out-expo);
 }
 
-.nav__links a:hover {
+.nav__links a:hover,
+.nav__links a.is-active {
   color: var(--fg-0);
 }
 
-.nav__links a:hover::after { width: 100%; }
+.nav__links a:hover::after,
+.nav__links a.is-active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.nav__links a.is-active {
+  color: var(--accent);
+}
 
 .nav__cta { display: none; }
 
@@ -200,9 +223,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 6px;
-  padding: var(--s-2);
-  z-index: 200;
+  width: 44px;
+  height: 44px;
+  z-index: var(--z-nav-burger);
 }
 
 .nav__burger span {
@@ -233,7 +258,8 @@
 .mobile-menu {
   position: fixed;
   inset: 0;
-  z-index: 150;
+  z-index: var(--z-mobile-menu);
+  background: var(--bg-0); /* fallback */
   background: color-mix(in oklch, var(--bg-0) 97%, transparent);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
@@ -288,6 +314,8 @@
   transform: translateY(0);
 }
 
+.mobile-menu__nav a { transition-delay: 0s; }
+
 .mobile-menu.is-open .mobile-menu__nav a:nth-child(1) { transition-delay: 0.1s; }
 .mobile-menu.is-open .mobile-menu__nav a:nth-child(2) { transition-delay: 0.16s; }
 .mobile-menu.is-open .mobile-menu__nav a:nth-child(3) { transition-delay: 0.22s; }
@@ -295,7 +323,8 @@
 .mobile-menu.is-open .mobile-menu__nav a:nth-child(5) { transition-delay: 0.34s; }
 .mobile-menu.is-open .mobile-menu__nav a:nth-child(6) { transition-delay: 0.44s; }
 
-.mobile-menu__nav a:hover { color: var(--accent); }
+.mobile-menu__nav a:hover,
+.mobile-menu__nav a.is-active { color: var(--accent); }
 
 .mobile-menu__nav .btn {
   font-family: 'Inter', sans-serif;
@@ -313,7 +342,7 @@
   top: 50%;
   right: var(--s-4);
   transform: translateY(-50%);
-  z-index: 110;
+  z-index: var(--z-theme);
 }
 
 @media (max-width: 1023px) {
@@ -330,6 +359,7 @@
   align-items: center;
   gap: var(--s-2);
   padding: 10px 14px;
+  background: var(--bg-1); /* fallback */
   background: color-mix(in oklch, var(--bg-1) 80%, transparent);
   border: 1px solid var(--border);
   border-radius: var(--r-pill);
@@ -363,6 +393,7 @@
   bottom: calc(100% + var(--s-3));
   right: 0;
   width: 280px;
+  background: var(--bg-1); /* fallback */
   background: color-mix(in oklch, var(--bg-1) 95%, transparent);
   backdrop-filter: blur(30px) saturate(150%);
   -webkit-backdrop-filter: blur(30px) saturate(150%);
@@ -427,6 +458,7 @@
   gap: var(--s-3);
   width: 100%;
   padding: var(--s-3);
+  min-height: 44px; /* WCAG 2.5.8 touch target */
   border-radius: var(--r-md);
   text-align: left;
   color: var(--fg-1);
@@ -501,7 +533,7 @@
   top: 0; left: 0;
   width: 0; height: 0;
   pointer-events: none;
-  z-index: 10000;
+  z-index: var(--z-cursor);
   display: none;
 }
 
@@ -511,6 +543,15 @@
   body a, body button, body [data-magnetic],
   body summary, body input, body textarea, body select {
     cursor: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor { display: none !important; }
+  body,
+  body a, body button, body [data-magnetic],
+  body summary, body input, body textarea, body select {
+    cursor: auto !important;
   }
 }
 
@@ -533,7 +574,7 @@
   background: var(--accent);
   border-radius: 50%;
   box-shadow: 0 0 12px var(--accent-glow);
-  z-index: 10002;
+  z-index: calc(var(--z-cursor) + 2);
   transition: opacity 0.3s ease,
               width 0.25s var(--ease-out-expo),
               height 0.25s var(--ease-out-expo);
@@ -543,7 +584,7 @@
   width: 40px; height: 40px;
   border: 1.5px solid var(--accent);
   border-radius: 50%;
-  z-index: 10001;
+  z-index: calc(var(--z-cursor) + 1);
   transition: opacity 0.3s ease,
               width 0.3s var(--ease-out-expo),
               height 0.3s var(--ease-out-expo),
@@ -559,7 +600,7 @@
 
 /* Label do cursor (texto contextual) */
 .cursor__label {
-  z-index: 10003;
+  z-index: calc(var(--z-cursor) + 3);
   padding: 6px 12px;
   background: var(--accent);
   color: var(--accent-ink);
@@ -595,7 +636,7 @@
   color: white;
   display: grid;
   place-items: center;
-  z-index: 90;
+  z-index: var(--z-wa-float);
   box-shadow: 0 8px 24px oklch(60% 0.18 145 / .4);
   transition: transform var(--d-base) var(--ease-out-expo),
               box-shadow var(--d-base) var(--ease-soft);
@@ -610,6 +651,17 @@
   opacity: 0.4;
   z-index: -1;
   animation: waPulse 2.5s var(--ease-soft) infinite;
+}
+
+/* Magnetic: custom properties para elementos nao-.btn
+   translate (CSS Transforms L2): Chrome 104+, FF 72+, Safari 14.1+
+   Fallback: magnetic simplesmente nao move, hover lift funciona normal */
+@supports (translate: 0px 0px) {
+  [data-magnetic] {
+    --mag-x: 0px;
+    --mag-y: 0px;
+    translate: var(--mag-x) var(--mag-y);
+  }
 }
 
 .wa-float:hover {

@@ -35,6 +35,17 @@
   /* ===== DURATIONS ===== */
   --d-fast: 180ms; --d-base: 320ms; --d-slow: 540ms; --d-slower: 820ms;
 
+  /* ===== Z-INDEX SCALE ===== */
+  --z-noise:           50;
+  --z-wa-float:        90;
+  --z-nav:             100;
+  --z-theme:           110;
+  --z-mobile-menu:     150;
+  --z-nav-burger:      200;
+  --z-scroll-progress: 300;
+  --z-cursor:          9000;
+  --z-loader:          9999;
+
   /* ===== CONTAINERS ===== */
   --container: 1280px;
   --container-narrow: 880px;
@@ -71,12 +82,14 @@
   --grid-line:     oklch(100% 0 0 / .035);
   --noise-opacity: 0.025;
 
-  /* Overlays com Efeito de Holofote Cinematográfico para Profundidade 3D */
+  /* Overlays: holofote cinematografico + cobertura do texto da imagem */
   --hero-overlay:
-    radial-gradient(ellipse at 70% 40%, transparent 20%, oklch(11% 0.008 250 / 0.85) 100%),
+    linear-gradient(90deg, oklch(11% 0.008 250 / 0.92) 0%, oklch(11% 0.008 250 / 0.7) 35%, transparent 65%),
+    radial-gradient(ellipse at 75% 40%, transparent 20%, oklch(11% 0.008 250 / 0.85) 100%),
     linear-gradient(180deg, oklch(11% 0.008 250 / 0.4) 0%, transparent 25%, transparent 60%, oklch(11% 0.008 250) 100%);
 
   --hero-overlay-mobile:
+    linear-gradient(180deg, oklch(11% 0.008 250 / 0.85) 0%, oklch(11% 0.008 250 / 0.5) 40%, transparent 60%),
     radial-gradient(ellipse at 85% 30%, transparent 15%, oklch(11% 0.008 250 / 0.95) 100%),
     linear-gradient(180deg, oklch(11% 0.008 250 / 0.6) 0%, transparent 20%, transparent 50%, oklch(11% 0.008 250) 100%);
 }
@@ -110,10 +123,12 @@
   --noise-opacity: 0.02;
 
   --hero-overlay:
-    radial-gradient(ellipse at 70% 40%, transparent 20%, oklch(8% 0 0 / 0.85) 100%),
+    linear-gradient(90deg, oklch(8% 0 0 / 0.92) 0%, oklch(8% 0 0 / 0.7) 35%, transparent 65%),
+    radial-gradient(ellipse at 75% 40%, transparent 20%, oklch(8% 0 0 / 0.85) 100%),
     linear-gradient(180deg, oklch(8% 0 0 / 0.4) 0%, transparent 25%, transparent 60%, oklch(8% 0 0) 100%);
 
   --hero-overlay-mobile:
+    linear-gradient(180deg, oklch(8% 0 0 / 0.85) 0%, oklch(8% 0 0 / 0.5) 40%, transparent 60%),
     radial-gradient(ellipse at 85% 30%, transparent 15%, oklch(8% 0 0 / 0.95) 100%),
     linear-gradient(180deg, oklch(8% 0 0 / 0.6) 0%, transparent 20%, transparent 50%, oklch(8% 0 0) 100%);
 }
@@ -147,10 +162,12 @@
   --noise-opacity: 0.028;
 
   --hero-overlay:
-    radial-gradient(ellipse at 70% 40%, transparent 20%, oklch(10% 0.015 265 / 0.85) 100%),
+    linear-gradient(90deg, oklch(10% 0.015 265 / 0.92) 0%, oklch(10% 0.015 265 / 0.7) 35%, transparent 65%),
+    radial-gradient(ellipse at 75% 40%, transparent 20%, oklch(10% 0.015 265 / 0.85) 100%),
     linear-gradient(180deg, oklch(10% 0.015 265 / 0.4) 0%, transparent 25%, transparent 60%, oklch(10% 0.015 265) 100%);
 
   --hero-overlay-mobile:
+    linear-gradient(180deg, oklch(10% 0.015 265 / 0.85) 0%, oklch(10% 0.015 265 / 0.5) 40%, transparent 60%),
     radial-gradient(ellipse at 85% 30%, transparent 15%, oklch(10% 0.015 265 / 0.95) 100%),
     linear-gradient(180deg, oklch(10% 0.015 265 / 0.6) 0%, transparent 20%, transparent 50%, oklch(10% 0.015 265) 100%);
 }
@@ -184,10 +201,12 @@
   --noise-opacity: 0.032;
 
   --hero-overlay:
-    radial-gradient(ellipse at 70% 40%, transparent 20%, oklch(10% 0.025 245 / 0.85) 100%),
+    linear-gradient(90deg, oklch(10% 0.025 245 / 0.92) 0%, oklch(10% 0.025 245 / 0.7) 35%, transparent 65%),
+    radial-gradient(ellipse at 75% 40%, transparent 20%, oklch(10% 0.025 245 / 0.85) 100%),
     linear-gradient(180deg, oklch(10% 0.025 245 / 0.4) 0%, transparent 25%, transparent 60%, oklch(10% 0.025 245) 100%);
 
   --hero-overlay-mobile:
+    linear-gradient(180deg, oklch(10% 0.025 245 / 0.85) 0%, oklch(10% 0.025 245 / 0.5) 40%, transparent 60%),
     radial-gradient(ellipse at 85% 30%, transparent 15%, oklch(10% 0.025 245 / 0.95) 100%),
     linear-gradient(180deg, oklch(10% 0.025 245 / 0.6) 0%, transparent 20%, transparent 50%, oklch(10% 0.025 245) 100%);
 }
@@ -222,10 +241,12 @@
   --noise-opacity: 0.03;
 
   --hero-overlay:
-    radial-gradient(ellipse at 70% 40%, transparent 20%, oklch(10% 0.008 60 / 0.85) 100%),
+    linear-gradient(90deg, oklch(10% 0.008 60 / 0.92) 0%, oklch(10% 0.008 60 / 0.7) 35%, transparent 65%),
+    radial-gradient(ellipse at 75% 40%, transparent 20%, oklch(10% 0.008 60 / 0.85) 100%),
     linear-gradient(180deg, oklch(10% 0.008 60 / 0.4) 0%, transparent 25%, transparent 60%, oklch(10% 0.008 60) 100%);
 
   --hero-overlay-mobile:
+    linear-gradient(180deg, oklch(10% 0.008 60 / 0.85) 0%, oklch(10% 0.008 60 / 0.5) 40%, transparent 60%),
     radial-gradient(ellipse at 85% 30%, transparent 15%, oklch(10% 0.008 60 / 0.95) 100%),
     linear-gradient(180deg, oklch(10% 0.008 60 / 0.6) 0%, transparent 20%, transparent 50%, oklch(10% 0.008 60) 100%);
 }

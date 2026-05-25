@@ -1,11 +1,36 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="obsidian">
+<html lang="pt-BR" data-theme="obsidian" class="no-js">
 <head>
+  <script>document.documentElement.classList.replace('no-js','js-ready')</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="Ygor Santos — Treinador pessoal premium em Ibicuí, BA. Disciplina, foco e resultados para quem busca transformação real." />
   <meta name="theme-color" content="#0A0C10" />
+  <meta name="color-scheme" content="dark" />
 
+  <!-- Favicon SVG inline — hexagono da marca -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 4 L32 12 L32 26 L20 36 L8 26 L8 12 Z' fill='none' stroke='%236B7A90' stroke-width='1.4'/%3E%3Cpath d='M20 11 L26 15 L26 24 L20 30 L14 24 L14 15 Z' fill='%236B7A90' opacity='0.3'/%3E%3C/svg%3E" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <!-- Open Graph — URLs absolutas obrigatórias para preview em redes sociais -->
+  <meta property="og:title" content="Ygor Santos — Treinador Pessoal Premium" />
+  <meta property="og:description" content="Disciplina, foco e resultados para quem busca transformação real. Atendimento presencial em Ibicuí, BA e online." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://albubarboza-beep.github.io/paginaygor/" />
+  <meta property="og:image" content="https://albubarboza-beep.github.io/paginaygor/img/ygorimagem.png" />
+  <meta property="og:image:width" content="1672" />
+  <meta property="og:image:height" content="941" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:site_name" content="Ygor Santos — Treinador" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ygor Santos — Treinador Pessoal Premium" />
+  <meta name="twitter:description" content="Disciplina, foco e resultados para quem busca transformação real." />
+  <meta name="twitter:image" content="https://albubarboza-beep.github.io/paginaygor/img/ygorimagem.png" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://albubarboza-beep.github.io/paginaygor/" />
 
   <!-- Preconnect crítico -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -16,8 +41,26 @@
   <link rel="preload" as="image" href="img/ygorimagem.png" media="(min-width: 768px)" fetchpriority="high" />
   <link rel="preload" as="image" href="img/igormobile.png" media="(max-width: 767px)" fetchpriority="high" />
 
-  <!-- Fontes -->
+  <!-- Fontes — preload do CSS descriptor + stylesheet normal -->
+  <link rel="preload" as="style" crossorigin href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" />
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Critical CSS inline: above-the-fold rendering instantâneo para LCP -->
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: oklch(11% 0.008 250);
+      color: oklch(86% 0.008 250);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    .hero { position: relative; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+    .hero__media { position: absolute; inset: 0; z-index: 0; }
+    .hero__media img { width: 100%; height: 100%; object-fit: cover; }
+    .loader { position: fixed; inset: 0; z-index: 9999; background: oklch(11% 0.008 250); display: grid; place-items: center; }
+  </style>
 
   <!-- CSS -->
   <link rel="stylesheet" href="assets/css/tokens.css" />
@@ -28,8 +71,19 @@
 </head>
 <body>
 
+  <!-- Fallback: garante visibilidade se JS falhar -->
+  <noscript>
+    <style>
+      [data-split], [data-split-lines] { visibility: visible !important; }
+      .loader { display: none !important; }
+    </style>
+  </noscript>
+
+  <!-- Skip to content (WCAG 2.4.1) -->
+  <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+
   <!-- ============ LOADER (fade out depois que tudo carrega) ============ -->
-  <div class="loader" id="loader" aria-hidden="true">
+  <div class="loader" id="loader" role="status" aria-live="polite" aria-label="Carregando página">
     <div class="loader__inner">
       <svg class="loader__mark" viewBox="0 0 60 60" aria-hidden="true">
         <path d="M30 5 L48 18 L48 38 L30 55 L12 38 L12 18 Z" fill="none" stroke="currentColor" stroke-width="1.5" />
@@ -133,16 +187,16 @@
         <a href="#faq" data-cursor-label="05">FAQ</a>
       </nav>
 
-      <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--primary nav__cta" data-magnetic data-cursor-label="Enviar">
+      <a href="https://wa.me/5573998603760" target="_blank" rel="noopener" class="btn btn--primary nav__cta" data-magnetic data-cursor-label="Enviar">
         <span class="btn__label">Conversar</span>
         <span class="btn__icon">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M5 12h14M13 5l7 7-7 7"/>
           </svg>
         </span>
       </a>
 
-      <button class="nav__burger" aria-label="Abrir menu" aria-expanded="false">
+      <button class="nav__burger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileMenu">
         <span></span><span></span>
       </button>
     </div>
@@ -156,18 +210,18 @@
       <a href="#processo"><span>03</span>Processo</a>
       <a href="#planos"><span>04</span>Planos</a>
       <a href="#faq"><span>05</span>FAQ</a>
-      <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--primary btn--block">Conversar no WhatsApp</a>
+      <a href="https://wa.me/5573998603760" target="_blank" rel="noopener" class="btn btn--primary btn--block">Conversar no WhatsApp</a>
     </nav>
   </div>
 
-  <main>
+  <main id="main-content">
 
     <!-- ============ HERO ============ -->
-    <section class="hero" id="hero">
+    <section class="hero" id="hero" aria-label="Apresentação — Ygor Santos, Treinador Pessoal Premium">
       <!-- Imagem como background (picture para art direction) -->
       <picture class="hero__media">
-        <source media="(max-width: 767px)" srcset="img/igormobile.png" />
-        <img src="img/ygorimagem.png" alt="Ygor Santos — Treinador" fetchpriority="high" decoding="async" />
+        <source media="(max-width: 767px)" srcset="img/igormobile.png" type="image/png" />
+        <img src="img/ygorimagem.png" alt="Ygor Santos — Treinador pessoal em Ibicuí, BA" width="1672" height="941" fetchpriority="high" />
       </picture>
 
       <!-- Overlay com gradient direcional para garantir contraste -->
@@ -178,17 +232,21 @@
         <div class="hero__top" data-reveal>
           <span class="hero__kicker">
             <span class="hero__kicker-dot"></span>
-            <span>Atendendo · Ibicuí · BA</span>
+            <span>Presencial · Ibicuí · BA &nbsp;|&nbsp; Online · Todo Brasil</span>
           </span>
         </div>
 
         <div class="hero__bottom">
-          
+          <h1 class="hero__tagline" data-split>
+            Disciplina que <em>transforma</em>.<br />
+            Resultado que <em>permanece</em>.
+          </h1>
+
           <div class="hero__actions" data-reveal data-reveal-delay="0.4">
-            <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--primary btn--lg" data-magnetic data-cursor-label="Iniciar">
+            <a href="https://wa.me/5573998603760" target="_blank" rel="noopener" class="btn btn--primary btn--lg" data-magnetic data-cursor-label="Iniciar">
               <span class="btn__label">Iniciar transformação</span>
               <span class="btn__icon">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M5 12h14M13 5l7 7-7 7"/>
                 </svg>
               </span>
@@ -209,6 +267,17 @@
       <!-- Marquee de palavras na borda inferior -->
       <div class="hero__marquee" aria-hidden="true">
         <div class="hero__marquee-track">
+          <span>Disciplina</span><span>·</span>
+          <span>Foco</span><span>·</span>
+          <span>Resultados</span><span>·</span>
+          <span>Disciplina</span><span>·</span>
+          <span>Foco</span><span>·</span>
+          <span>Resultados</span><span>·</span>
+          <span>Disciplina</span><span>·</span>
+          <span>Foco</span><span>·</span>
+          <span>Resultados</span><span>·</span>
+        </div>
+        <div class="hero__marquee-track" aria-hidden="true">
           <span>Disciplina</span><span>·</span>
           <span>Foco</span><span>·</span>
           <span>Resultados</span><span>·</span>
@@ -252,7 +321,7 @@
               <li>Periodização</li>
               <li>Recuperação</li>
               <li>Treino híbrido</li>
-              <li>Acompanhamento contínuo</li>
+              <li>Presencial & Online</li>
             </ul>
           </div>
 
@@ -291,9 +360,76 @@
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
                 <circle cx="12" cy="10" r="3"/>
               </svg>
-              <span>Ibicuí · BA — presencial e online</span>
+              <span>Ibicuí · BA — <strong>Presencial</strong> e <strong>Online</strong></span>
             </div>
           </aside>
+
+          <!-- Carrossel de Certificados / Formações — full-width na row 2 -->
+          <div class="metodo__carousel-wrapper" data-reveal data-reveal-delay="0.4">
+            <div class="metodo__carousel-head">
+              <h3>Formação & Certificações</h3>
+              <div class="metodo__carousel-controls">
+                <button class="metodo__carousel-btn metodo__carousel-btn--prev" aria-label="Anterior">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                </button>
+                <button class="metodo__carousel-btn metodo__carousel-btn--next" aria-label="Próximo">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="metodo__carousel" role="region" aria-label="Certificados e formações">
+              <div class="metodo__carousel-track">
+                <article class="cert-card">
+                  <div class="cert-card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+                  </div>
+                  <span class="cert-card__type">Graduação</span>
+                  <h4>Educação Física</h4>
+                  <p>Bacharelado completo com foco em treinamento desportivo e fisiologia do exercício.</p>
+                </article>
+                <article class="cert-card">
+                  <div class="cert-card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+                  </div>
+                  <span class="cert-card__type">Curso</span>
+                  <h4>Treinamento Funcional</h4>
+                  <p>Certificação em metodologias de treino funcional aplicadas à performance e reabilitação.</p>
+                </article>
+                <article class="cert-card">
+                  <div class="cert-card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </div>
+                  <span class="cert-card__type">Certificação</span>
+                  <h4>Periodização do Treino</h4>
+                  <p>Especialização em periodização e programação de treino para diferentes perfis de alunos.</p>
+                </article>
+                <article class="cert-card">
+                  <div class="cert-card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+                  </div>
+                  <span class="cert-card__type">Mentoria</span>
+                  <h4>Mentoria em Gestão</h4>
+                  <p>Formação em gestão de alunos, atendimento premium e construção de autoridade profissional.</p>
+                </article>
+                <article class="cert-card">
+                  <div class="cert-card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                  </div>
+                  <span class="cert-card__type">Formação</span>
+                  <h4>Biomecânica Aplicada</h4>
+                  <p>Estudo aprofundado de biomecânica para correção postural e prevenção de lesões.</p>
+                </article>
+                <article class="cert-card">
+                  <div class="cert-card__icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  </div>
+                  <span class="cert-card__type">Workshop</span>
+                  <h4>Nutrição Esportiva</h4>
+                  <p>Capacitação em princípios de nutrição aplicada ao treinamento e composição corporal.</p>
+                </article>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -313,7 +449,7 @@
         </header>
 
         <div class="resultados__grid">
-          <article class="resultado" data-reveal>
+          <article class="resultado" data-reveal data-cursor-label="Resultado">
             <div class="resultado__visual">
               <span class="resultado__badge">+8kg massa magra</span>
               <span class="resultado__index">01</span>
@@ -327,7 +463,7 @@
             </div>
           </article>
 
-          <article class="resultado" data-reveal data-reveal-delay="0.1">
+          <article class="resultado" data-reveal data-reveal-delay="0.1" data-cursor-label="Resultado">
             <div class="resultado__visual">
               <span class="resultado__badge">−14% gordura</span>
               <span class="resultado__index">02</span>
@@ -341,7 +477,7 @@
             </div>
           </article>
 
-          <article class="resultado" data-reveal data-reveal-delay="0.2">
+          <article class="resultado" data-reveal data-reveal-delay="0.2" data-cursor-label="Resultado">
             <div class="resultado__visual">
               <span class="resultado__badge">Dor lombar zerada</span>
               <span class="resultado__index">03</span>
@@ -438,7 +574,7 @@
               <li>Reavaliação trimestral</li>
               <li>Suporte por WhatsApp</li>
             </ul>
-            <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--ghost btn--block" data-magnetic data-cursor-label="Escolher">Escolher Essencial</a>
+            <a href="https://wa.me/5573998603760" target="_blank" rel="noopener" class="btn btn--ghost btn--block" data-magnetic data-cursor-label="Escolher">Escolher Essencial</a>
           </article>
 
           <article class="plano plano--featured" data-reveal data-reveal-delay="0.15">
@@ -463,7 +599,7 @@
               <li>Suporte direto e prioritário</li>
               <li>Acompanhamento semanal</li>
             </ul>
-            <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--primary btn--block" data-magnetic data-cursor-label="Escolher">Escolher Premium</a>
+            <a href="https://wa.me/5573998603760" target="_blank" rel="noopener" class="btn btn--primary btn--block" data-magnetic data-cursor-label="Escolher">Escolher Premium</a>
           </article>
 
           <article class="plano" data-reveal data-reveal-delay="0.3">
@@ -487,12 +623,12 @@
               <li>Suporte 24/7</li>
               <li>Mentoria mensal exclusiva</li>
             </ul>
-            <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--ghost btn--block" data-magnetic data-cursor-label="Escolher">Escolher Exclusivo</a>
+            <a href="https://wa.me/5573998603760" target="_blank" rel="noopener" class="btn btn--ghost btn--block" data-magnetic data-cursor-label="Escolher">Escolher Exclusivo</a>
           </article>
         </div>
 
         <p class="planos__note" data-reveal>
-          Todos os planos passam por uma <a href="https://wa.me/5577999999999" target="_blank" rel="noopener">conversa inicial gratuita</a> antes da contratação.
+          Todos os planos passam por uma <a href="https://wa.me/5573998603760" target="_blank" rel="noopener">conversa inicial gratuita</a> antes da contratação.
         </p>
       </div>
     </section>
@@ -572,12 +708,12 @@
     </section>
 
     <!-- ============ CTA FINAL ============ -->
-    <section class="cta-final">
+    <section class="cta-final" id="cta-final" aria-labelledby="cta-final-title">
       <div class="cta-final__bg" aria-hidden="true"></div>
       <div class="container">
         <div class="cta-final__inner" data-reveal>
           <span class="eyebrow"><span>·</span>Próximo passo</span>
-          <h2 class="cta-final__title" data-split-lines>
+          <h2 class="cta-final__title" id="cta-final-title" data-split-lines>
             Sua transformação começa<br />
             com <em>uma conversa</em>.
           </h2>
@@ -585,10 +721,10 @@
             Vagas limitadas. Atendimento personalizado exige tempo —
             e tempo é o recurso mais finito que tenho.
           </p>
-          <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="btn btn--primary btn--lg" data-magnetic data-cursor-label="Conversar">
+          <a href="https://wa.me/5573998603760" target="_blank" rel="noopener" class="btn btn--primary btn--lg" data-magnetic data-cursor-label="Conversar">
             <span class="btn__label">Agendar avaliação</span>
             <span class="btn__icon">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M5 12h14M13 5l7 7-7 7"/>
               </svg>
             </span>
@@ -618,7 +754,7 @@
         </div>
 
         <div class="footer__col">
-          <h5>Navegação</h5>
+          <h4>Navegação</h4>
           <ul>
             <li><a href="#metodo">Método</a></li>
             <li><a href="#resultados">Resultados</a></li>
@@ -629,9 +765,9 @@
         </div>
 
         <div class="footer__col">
-          <h5>Contato</h5>
+          <h4>Contato</h4>
           <ul>
-            <li><a href="https://wa.me/5577999999999" target="_blank" rel="noopener">WhatsApp direto</a></li>
+            <li><a href="https://wa.me/5573998603760" target="_blank" rel="noopener">WhatsApp direto</a></li>
             <li><a href="mailto:contato@ygorsantos.com.br">contato@ygorsantos.com.br</a></li>
             <li><span>Ibicuí · BA</span></li>
           </ul>
@@ -639,31 +775,145 @@
       </div>
 
       <div class="footer__bottom">
-        <p>© <span id="year"></span> Ygor Santos · Todos os direitos reservados.</p>
+        <p>© <span id="year">2025</span> Ygor Santos · Todos os direitos reservados.</p>
         <p>Disciplina · Foco · Resultados</p>
       </div>
     </div>
   </footer>
 
   <!-- ============ WHATSAPP FLOAT ============ -->
-  <a href="https://wa.me/5577999999999" target="_blank" rel="noopener" class="wa-float" aria-label="Falar no WhatsApp" data-cursor-label="WhatsApp">
+  <a href="https://wa.me/5573998603760" target="_blank" rel="noopener" class="wa-float" aria-label="Falar no WhatsApp" data-cursor-label="WhatsApp">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
     </svg>
   </a>
 
   <!-- ============ SCRIPTS ============ -->
-  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js" defer></script>
 
-  <script src="assets/js/lenis-init.js"></script>
-  <script src="assets/js/theme-switcher.js"></script>
-  <script src="assets/js/interactions.js"></script>
-  <script src="assets/js/cursor.js"></script>
-  <script src="assets/js/magnetic.js"></script>
-  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/lenis-init.js" defer></script>
+  <script src="assets/js/theme-switcher.js" defer></script>
+  <script src="assets/js/interactions.js" defer></script>
+  <script src="assets/js/cursor.js" defer></script>
+  <script src="assets/js/magnetic.js" defer></script>
+  <script src="assets/js/animations.js" defer></script>
+  <script src="assets/js/carousel.js" defer></script>
+
+  <!-- Schema.org: SEO local Ibicuí + Person -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "name": "Ygor Santos — Treinador Pessoal",
+        "description": "Treinador pessoal premium em Ibicuí, BA. Disciplina, foco e resultados para transformação real e sustentável.",
+        "url": "https://albubarboza-beep.github.io/paginaygor/",
+        "telephone": "+55-73-998603760",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Ibicuí",
+          "addressRegion": "BA",
+          "addressCountry": "BR"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "-14.8469",
+          "longitude": "-39.9869"
+        },
+        "priceRange": "R$480 – R$1.280/mês",
+        "openingHoursSpecification": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+          "opens": "06:00",
+          "closes": "20:00"
+        }
+      },
+      {
+        "@type": "Person",
+        "name": "Ygor Santos",
+        "jobTitle": "Treinador Pessoal",
+        "url": "https://albubarboza-beep.github.io/paginaygor/",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Ibicuí",
+          "addressRegion": "BA",
+          "addressCountry": "BR"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Schema.org: FAQ — Rich Results no Google -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Nunca treinei na vida. Posso começar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim — e na verdade essa é a melhor hora. Construímos a base do zero, no seu ritmo, respeitando sua biomecânica. O método foi desenhado exatamente para quem precisa começar do começo, com segurança."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Tenho mais de 50 anos. Vou conseguir acompanhar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A maior parte dos meus alunos está nessa faixa. O protocolo é desenhado para o seu corpo, não para um padrão genérico. Idade não é limitação — é dado de planejamento."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Atende online ou só presencial?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ambos. Atendimento presencial em Ibicuí, BA. Atendimento online com videochamadas estruturadas, app de acompanhamento e suporte direto via WhatsApp para alunos de qualquer cidade."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quanto tempo até ver resultado?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Resultado visível externo: entre 6 e 12 semanas. Resultado interno (energia, sono, humor, força): nas primeiras 3 semanas. Mas o que importa é resultado sustentável — e isso pede tempo."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "E se eu tiver alguma lesão ou limitação?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Conversamos antes de qualquer coisa. Em muitos casos trabalho em parceria com fisioterapeutas e médicos. O plano é construído ao redor das suas particularidades — não apesar delas."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Posso cancelar a qualquer momento?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sim. Trabalho com contratos mensais renováveis, sem fidelidade obrigatória. A continuidade é uma escolha sua a cada mês."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- Speculation Rules: prefetch inteligente -->
+  <script type="speculationrules">
+  {
+    "prefetch": [
+      { "where": { "href_matches": "https://wa.me/*" }, "eagerness": "moderate" }
+    ]
+  }
+  </script>
 
   <script>
     if ('serviceWorker' in navigator) {

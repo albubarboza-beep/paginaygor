@@ -1,46 +1,45 @@
 /**
  * magnetic.js
- * Botões magnéticos. Mantido — funciona perfeitamente.
+ * Botoes magneticos — delegate pattern com RAF singleton.
+ * Usa CSS custom properties para nao sobrescrever transforms do CSS hover.
+ * Funciona mesmo com reduced motion (e feedback de interacao, nao animacao decorativa).
  */
 (() => {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const STRENGTH = 0.22;
   const RADIUS = 90;
+  const magnetics = document.querySelectorAll('[data-magnetic]');
+  if (!magnetics.length) return;
 
-  document.querySelectorAll('[data-magnetic]').forEach((el) => {
-    let rafId = null;
-    let hover = false;
+  let rafId = null;
+  let mx = 0, my = 0;
 
-    const onMove = (e) => {
+  const update = () => {
+    magnetics.forEach((el) => {
       const rect = el.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
-      const dx = e.clientX - cx;
-      const dy = e.clientY - cy;
+      const dx = mx - cx;
+      const dy = my - cy;
       const dist = Math.hypot(dx, dy);
+      const threshold = rect.width / 2 + RADIUS;
 
-      if (dist < rect.width / 2 + RADIUS) {
-        hover = true;
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => {
-          el.style.transform = `translate(${dx * STRENGTH}px, ${dy * STRENGTH}px)`;
-        });
-      } else if (hover) {
-        hover = false;
-        if (rafId) cancelAnimationFrame(rafId);
-        rafId = requestAnimationFrame(() => { el.style.transform = ''; });
+      if (dist < threshold) {
+        // CSS custom properties: nao conflitam com transform do hover
+        el.style.setProperty('--mag-x', `${dx * STRENGTH}px`);
+        el.style.setProperty('--mag-y', `${dy * STRENGTH}px`);
+      } else {
+        el.style.removeProperty('--mag-x');
+        el.style.removeProperty('--mag-y');
       }
-    };
+    });
+    rafId = null;
+  };
 
-    const onLeave = () => {
-      hover = false;
-      if (rafId) cancelAnimationFrame(rafId);
-      el.style.transform = '';
-    };
-
-    window.addEventListener('mousemove', onMove);
-    el.addEventListener('mouseleave', onLeave);
-  });
+  window.addEventListener('mousemove', (e) => {
+    mx = e.clientX;
+    my = e.clientY;
+    if (!rafId) rafId = requestAnimationFrame(update);
+  }, { passive: true });
 })();

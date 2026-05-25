@@ -1,6 +1,7 @@
 /**
  * animations.js
- * Orquestração GSAP + SplitType + ScrollTrigger FORÇADA (Ignora travas do SO).
+ * Orquestração GSAP + SplitType + ScrollTrigger.
+ * Com reduced motion: fades suaves sem translateY.
  */
 (() => {
   const boot = () => {
@@ -12,13 +13,12 @@
     const { gsap } = window;
     const ST = window.ScrollTrigger;
     const SPT = window.SplitType;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (ST) gsap.registerPlugin(ST);
 
-    // TRAVA DE REDUÇÃO DE ANIMAÇÕES REMOVIDA DAQUI! O GSAP vai rodar sempre.
-
     // ============================================
-    // SPLIT TYPE 
+    // SPLIT TYPE
     // ============================================
     if (SPT) {
       document.querySelectorAll('[data-split]').forEach((el) => {
@@ -47,6 +47,12 @@
       });
     }
 
+    // Durations ajustadas para reduced motion
+    const dur = prefersReduced ? 0.4 : 1;
+    const revealY = prefersReduced ? 0 : 40;
+    const charY = prefersReduced ? 0 : 110;
+    const stag = prefersReduced ? 0 : 0.025;
+
     // ============================================
     // HERO ENTRANCE
     // ============================================
@@ -61,32 +67,36 @@
         const scroll = hero.querySelector('.hero__scroll');
         const marquee = hero.querySelector('.hero__marquee');
 
-        if (kicker) tl.from(kicker, { opacity: 0, y: 16, duration: 0.9 });
-        
+        if (kicker) tl.from(kicker, { opacity: 0, y: prefersReduced ? 0 : 16, duration: dur * 0.9 });
+
         if (chars && chars.length > 0) {
-          tl.from(chars, { yPercent: 110, opacity: 0, duration: 1.1, stagger: 0.025 }, kicker ? '-=0.5' : 0);
+          tl.from(chars, { yPercent: charY, opacity: 0, duration: dur * 1.1, stagger: stag }, kicker ? '-=0.5' : 0);
         }
 
         if (actions && actions.length > 0) {
-          tl.from(actions, { opacity: 0, y: 20, duration: 0.9, stagger: 0.1 }, '-=0.7');
+          tl.from(actions, { opacity: 0, y: prefersReduced ? 0 : 20, duration: dur * 0.9, stagger: 0.1 }, '-=0.7');
         }
 
-        if (scroll) tl.from(scroll, { opacity: 0, y: 10, duration: 0.8 }, '-=0.5');
-        if (marquee) tl.from(marquee, { opacity: 0, duration: 0.8 }, '-=0.6');
+        if (scroll) tl.from(scroll, { opacity: 0, duration: dur * 0.8 }, '-=0.5');
+        if (marquee) tl.from(marquee, { opacity: 0, duration: dur * 0.8 }, '-=0.6');
 
         hero.querySelectorAll('[data-reveal]').forEach((el) => el.classList.add('is-visible'));
       }
     } catch (e) {}
 
     // ============================================
-    // SPLIT LINES 
+    // SPLIT LINES
     // ============================================
     if (ST) {
       document.querySelectorAll('[data-split-lines]').forEach((el) => {
         const lines = el.querySelectorAll('.line__inner');
         if (!lines.length) return;
         gsap.from(lines, {
-          yPercent: 105, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.1,
+          yPercent: prefersReduced ? 0 : 105,
+          opacity: 0,
+          duration: dur * 1.1,
+          ease: 'expo.out',
+          stagger: prefersReduced ? 0.05 : 0.1,
           scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none', once: true }
         });
       });
@@ -100,8 +110,8 @@
         if (el.closest('.hero')) { el.classList.add('is-visible'); return; }
         const delay = parseFloat(el.dataset.revealDelay || '0');
         gsap.fromTo(el,
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 1, delay, ease: 'expo.out',
+          { opacity: 0, y: revealY },
+          { opacity: 1, y: 0, duration: dur, delay, ease: 'expo.out',
             scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none', once: true },
             onComplete: () => el.classList.add('is-visible') }
         );
@@ -109,7 +119,7 @@
     }
 
     // ============================================
-    // COUNTERS 
+    // COUNTERS (sempre roda, é informativo)
     // ============================================
     if (ST) {
       document.querySelectorAll('[data-counter]').forEach((el) => {
@@ -117,7 +127,7 @@
         if (isNaN(target)) return;
         const obj = { val: 0 };
         gsap.to(obj, {
-          val: target, duration: 2, ease: 'power3.out',
+          val: target, duration: prefersReduced ? 0.8 : 2, ease: 'power3.out',
           scrollTrigger: { trigger: el, start: 'top 90%', once: true },
           onUpdate: () => { el.textContent = Math.round(obj.val).toLocaleString('pt-BR'); }
         });
@@ -125,9 +135,9 @@
     }
 
     // ============================================
-    // HERO PARALLAX
+    // HERO PARALLAX (desliga com reduced motion)
     // ============================================
-    if (ST) {
+    if (ST && !prefersReduced) {
       const heroImg = document.querySelector('.hero__media img');
       if (heroImg) {
         gsap.to(heroImg, {
@@ -143,11 +153,13 @@
           scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom 60%', scrub: 1 }
         });
       }
+    }
 
+    if (ST) {
       window.addEventListener('themechange', () => { setTimeout(() => ST.refresh(), 200); });
     }
   };
 
-  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); } 
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', boot); }
   else { boot(); }
 })();

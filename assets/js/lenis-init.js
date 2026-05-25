@@ -1,15 +1,16 @@
 /**
  * lenis-init.js
- * Smooth scroll FORÇADO (ignorando restrições do SO).
+ * Smooth scroll. Desativado com reduced motion (scroll nativo é mais confortável).
  */
 (() => {
-  // TRAVA DE REDUÇÃO DE ANIMAÇÕES REMOVIDA DAQUI!
   if (!window.Lenis) return;
 
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   const lenis = new window.Lenis({
-    duration: 1.15,
+    duration: prefersReduced ? 0.6 : 1.15,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: true,
+    smoothWheel: !prefersReduced,
     smoothTouch: false,
     touchMultiplier: 2,
     wheelMultiplier: 1,
@@ -49,7 +50,7 @@
         const target = document.querySelector(id);
         if (target) {
           e.preventDefault();
-          lenis.scrollTo(target, { offset: -80, duration: 1.4 });
+          lenis.scrollTo(target, { offset: -80, duration: prefersReduced ? 0.6 : 1.4 });
         }
       }
     });

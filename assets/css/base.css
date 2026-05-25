@@ -10,6 +10,11 @@ html {
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
   scroll-padding-top: var(--nav-h);
+  scroll-behavior: smooth; /* fallback se Lenis nao carregar */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
 
 /* Lenis controla o scroll */
@@ -18,8 +23,6 @@ html.lenis body { height: auto; }
 .lenis.lenis-smooth { scroll-behavior: auto !important; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
 .lenis.lenis-stopped { overflow: hidden; }
-
-/* TRAVA DE REDUÇÃO DE ANIMAÇÕES REMOVIDA DAQUI! */
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -62,6 +65,26 @@ a { color: inherit; text-decoration: none; }
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: var(--r-sm);
+}
+
+/* Skip-to-content (WCAG 2.4.1) */
+.skip-link {
+  position: fixed;
+  top: -100%;
+  left: var(--s-4);
+  z-index: calc(var(--z-loader) + 1);
+  padding: var(--s-3) var(--s-5);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  border-radius: 0 0 var(--r-md) var(--r-md);
+  transition: top var(--d-fast) var(--ease-out-expo);
+}
+
+.skip-link:focus {
+  top: 0;
 }
 
 /* ============================================
@@ -132,6 +155,11 @@ strong { color: var(--fg-0); font-weight: 500; }
   font-size: var(--fs-3xl);
   margin-bottom: var(--s-5);
   max-width: 20ch;
+  transition: font-variation-settings var(--d-slow) var(--ease-soft);
+}
+
+.section-title:hover {
+  font-variation-settings: 'opsz' 144, 'SOFT' 100;
 }
 
 .section-sub {
@@ -164,9 +192,10 @@ strong { color: var(--fg-0); font-weight: 500; }
 .noise {
   position: fixed; inset: 0;
   pointer-events: none;
-  z-index: 9999;
+  z-index: var(--z-noise);
   opacity: var(--noise-opacity);
   mix-blend-mode: overlay;
+  contain: strict; /* isola GPU layer — evita repaint cascade */
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -174,23 +203,23 @@ strong { color: var(--fg-0); font-weight: 500; }
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 2px;
-  z-index: 200;
+  z-index: var(--z-scroll-progress);
   background: transparent;
   pointer-events: none;
 }
 
 .scroll-progress__fill {
   height: 100%;
-  width: 0;
   background: linear-gradient(90deg, var(--accent), var(--accent-2));
   box-shadow: 0 0 8px var(--accent-glow);
   transform-origin: left;
-  transition: width 0.1s linear;
+  transform: scaleX(0);
+  will-change: transform;
 }
 
 .loader {
   position: fixed; inset: 0;
-  z-index: 10000;
+  z-index: var(--z-loader);
   background: var(--bg-0);
   display: grid;
   place-items: center;
@@ -244,4 +273,40 @@ strong { color: var(--fg-0); font-weight: 500; }
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--fg-2);
+}
+
+/* ============================================
+   PRINT — legibilidade e economia de tinta
+   ============================================ */
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  body { font-size: 12pt; line-height: 1.5; }
+
+  .loader, .noise, .cursor, .scroll-progress,
+  .theme-switcher, .wa-float, .hero__marquee,
+  .hero__scroll, .nav__burger, .mobile-menu,
+  .hero__overlay, .metodo__card-bg, .cta-final__bg { display: none !important; }
+
+  .nav { position: static; border-bottom: 1px solid #ccc; padding: 8pt 0; }
+  .hero { min-height: auto; }
+  .hero__media { position: static; height: auto; }
+  .hero__media img { max-height: 300pt; object-fit: contain; }
+  .hero__content { position: static; padding: 12pt 0; }
+
+  a[href]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #555 !important; }
+  a[href^="#"]::after { content: none; }
+  a[href^="https://wa.me"]::after { content: " (WhatsApp)"; }
+
+  .btn { border: 1px solid #000 !important; padding: 4pt 8pt; }
+
+  section { page-break-inside: avoid; padding: 16pt 0; }
+  h1, h2, h3, h4 { page-break-after: avoid; }
 }

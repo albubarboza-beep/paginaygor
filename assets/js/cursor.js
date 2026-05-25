@@ -1,10 +1,10 @@
 /**
  * cursor.js
- * Cursor avançado com lerp + label contextual via [data-cursor-label].
+ * Cursor com lerp + label contextual + idle detection.
+ * Funciona mesmo com reduced motion (cursor é funcional, não decorativo).
  */
 (() => {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const cursor = document.querySelector('.cursor');
   if (!cursor) return;
@@ -14,11 +14,31 @@
   const label = cursor.querySelector('.cursor__label');
   if (!dot || !ring || !label) return;
 
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Com reduced motion, não mostra cursor custom — CSS já restaura o nativo
+  if (prefersReduced) return;
+
+  const loader = document.getElementById('loader');
+  let loaderDone = !loader || loader.classList.contains('is-done');
+  if (loader && !loaderDone) {
+    const obs = new MutationObserver(() => {
+      if (loader.classList.contains('is-done')) {
+        loaderDone = true;
+        obs.disconnect();
+      }
+    });
+    obs.observe(loader, { attributes: true, attributeFilter: ['class'] });
+  }
+
   let mx = -100, my = -100;
   let dx = -100, dy = -100;
   let rx = -100, ry = -100;
   let lx = -100, ly = -100;
   let moved = false;
+  let idle = false;
+  let idleTimer = null;
+  let rafId = null;
 
   const onMove = (e) => {
     mx = e.clientX; my = e.clientY;
@@ -26,12 +46,18 @@
       dx = rx = lx = mx;
       dy = ry = ly = my;
       moved = true;
-      cursor.classList.add('is-ready');
+      if (loaderDone) cursor.classList.add('is-ready');
     }
+    if (idle) {
+      idle = false;
+      rafId = requestAnimationFrame(tick);
+    }
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => { idle = true; }, 3000);
   };
 
   window.addEventListener('mousemove', onMove, { passive: true });
-  document.addEventListener('mouseenter', () => cursor.classList.add('is-ready'));
+  document.addEventListener('mouseenter', () => { if (loaderDone) cursor.classList.add('is-ready'); });
   document.addEventListener('mouseleave', () => cursor.classList.remove('is-ready'));
 
   const lerp = (a, b, n) => a + (b - a) * n;
@@ -51,11 +77,12 @@
     label.style.setProperty('--x', `${lx}px`);
     label.style.setProperty('--y', `${ly}px`);
 
-    requestAnimationFrame(tick);
+    if (!idle) {
+      rafId = requestAnimationFrame(tick);
+    }
   };
-  tick();
+  rafId = requestAnimationFrame(tick);
 
-  // Hover state em interativos
   const interactives = 'a, button, [data-magnetic], summary, input, textarea, select, details';
   document.querySelectorAll(interactives).forEach((el) => {
     el.addEventListener('mouseenter', () => {
