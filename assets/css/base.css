@@ -33,9 +33,27 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent; /* Remove flash azul iOS */
   transition: background var(--d-slow) var(--ease-soft),
               color var(--d-slow) var(--ease-soft);
   font-feature-settings: 'ss01', 'cv11';
+}
+
+/* iOS Safe Area Insets para notch e home indicator */
+@supports (padding: env(safe-area-inset-top)) {
+  .nav__inner {
+    padding-left: max(var(--s-5), env(safe-area-inset-left));
+    padding-right: max(var(--s-5), env(safe-area-inset-right));
+  }
+  .wa-float {
+    bottom: max(var(--s-5), env(safe-area-inset-bottom));
+    right: max(var(--s-5), env(safe-area-inset-right));
+  }
+}
+
+/* Remove tap highlight em interativos */
+a, button, summary, [role="button"], [tabindex] {
+  -webkit-tap-highlight-color: transparent;
 }
 
 img, svg, video, picture {

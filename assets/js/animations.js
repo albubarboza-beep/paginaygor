@@ -135,9 +135,10 @@
     }
 
     // ============================================
-    // HERO PARALLAX (desliga com reduced motion)
+    // HERO PARALLAX (desliga em reduced motion e mobile — causa jank)
     // ============================================
-    if (ST && !prefersReduced) {
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (ST && !prefersReduced && !isMobile) {
       const heroImg = document.querySelector('.hero__media img');
       if (heroImg) {
         gsap.to(heroImg, {

@@ -1,7 +1,9 @@
 /**
  * carousel.js
- * Carrossel de certificados — drag, touch, botoes.
- * Sem dependencias, progressive enhancement.
+ * Carrossel de certificados.
+ * Mobile (<1024px): scroll horizontal nativo com scroll-snap (CSS).
+ * Desktop (>=1024px): drag, mouse, botoes prev/next via transform.
+ * Progressive enhancement: se JS falhar, scroll nativo funciona em todas telas.
  */
 (() => {
   const wrapper = document.querySelector('.metodo__carousel');
@@ -14,6 +16,9 @@
   const cards = track.querySelectorAll('.cert-card');
   if (!cards.length) return;
 
+  const desktopQuery = window.matchMedia('(min-width: 1024px) and (hover: hover) and (pointer: fine)');
+
+  let isDesktop = desktopQuery.matches;
   let isDragging = false;
   let startX = 0;
   let scrollLeft = 0;
@@ -22,19 +27,19 @@
   let lastX = 0;
   let lastTime = 0;
 
-  // Calcula limites
+  const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
+
   const getMaxScroll = () => {
     const trackWidth = track.scrollWidth;
     const wrapperWidth = wrapper.clientWidth;
     return Math.max(0, trackWidth - wrapperWidth);
   };
 
-  const clamp = (val, min, max) => Math.min(Math.max(val, min), max);
-
-  const setTranslate = (x) => {
-    currentTranslate = clamp(x, -getMaxScroll(), 0);
-    track.style.transform = `translateX(${currentTranslate}px)`;
-    updateButtons();
+  const getCardWidth = () => {
+    if (!cards[0]) return 280;
+    const style = getComputedStyle(track);
+    const gap = parseFloat(style.gap) || 16;
+    return cards[0].offsetWidth + gap;
   };
 
   const updateButtons = () => {
@@ -43,28 +48,55 @@
     nextBtn.disabled = currentTranslate <= -getMaxScroll();
   };
 
-  // Botoes
-  const getCardWidth = () => {
-    if (!cards[0]) return 280;
-    const style = getComputedStyle(track);
-    const gap = parseFloat(style.gap) || 16;
-    return cards[0].offsetWidth + gap;
+  const setTranslate = (x) => {
+    currentTranslate = clamp(x, -getMaxScroll(), 0);
+    track.style.transform = `translateX(${currentTranslate}px)`;
+    updateButtons();
   };
+
+  const enableDesktop = () => {
+    wrapper.classList.add('js-carousel');
+    setTranslate(0);
+    updateButtons();
+  };
+
+  const enableMobile = () => {
+    wrapper.classList.remove('js-carousel');
+    track.style.transform = '';
+    currentTranslate = 0;
+  };
+
+  if (isDesktop) enableDesktop();
+  else enableMobile();
+
+  const onMediaChange = (e) => {
+    isDesktop = e.matches;
+    if (isDesktop) enableDesktop();
+    else enableMobile();
+  };
+
+  if (desktopQuery.addEventListener) {
+    desktopQuery.addEventListener('change', onMediaChange);
+  } else if (desktopQuery.addListener) {
+    desktopQuery.addListener(onMediaChange);
+  }
 
   if (prevBtn) {
     prevBtn.addEventListener('click', () => {
+      if (!isDesktop) return;
       setTranslate(currentTranslate + getCardWidth());
     });
   }
 
   if (nextBtn) {
     nextBtn.addEventListener('click', () => {
+      if (!isDesktop) return;
       setTranslate(currentTranslate - getCardWidth());
     });
   }
 
-  // Mouse drag
   track.addEventListener('mousedown', (e) => {
+    if (!isDesktop) return;
     isDragging = true;
     startX = e.clientX;
     scrollLeft = currentTranslate;
@@ -76,7 +108,7 @@
   });
 
   window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
+    if (!isDragging || !isDesktop) return;
     const dx = e.clientX - startX;
     const now = Date.now();
     const dt = now - lastTime;
@@ -91,56 +123,20 @@
     isDragging = false;
     track.style.transition = '';
     track.style.cursor = '';
-
-    // Momentum
     const momentum = velocity * 150;
     setTranslate(currentTranslate + momentum);
     velocity = 0;
   });
 
-  // Touch
-  track.addEventListener('touchstart', (e) => {
-    isDragging = true;
-    startX = e.touches[0].clientX;
-    scrollLeft = currentTranslate;
-    lastX = startX;
-    lastTime = Date.now();
-    track.style.transition = 'none';
-  }, { passive: true });
-
-  track.addEventListener('touchmove', (e) => {
-    if (!isDragging) return;
-    const dx = e.touches[0].clientX - startX;
-    const now = Date.now();
-    const dt = now - lastTime;
-    if (dt > 0) velocity = (e.touches[0].clientX - lastX) / dt;
-    lastX = e.touches[0].clientX;
-    lastTime = now;
-    setTranslate(scrollLeft + dx);
-  }, { passive: true });
-
-  track.addEventListener('touchend', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    track.style.transition = '';
-    const momentum = velocity * 150;
-    setTranslate(currentTranslate + momentum);
-    velocity = 0;
-  });
-
-  // Previne cliques apos drag
   track.addEventListener('click', (e) => {
+    if (!isDesktop) return;
     if (Math.abs(currentTranslate - scrollLeft) > 5) {
       e.preventDefault();
       e.stopPropagation();
     }
   }, true);
 
-  // Init
-  updateButtons();
-
-  // Recalcula ao redimensionar
   window.addEventListener('resize', () => {
-    setTranslate(clamp(currentTranslate, -getMaxScroll(), 0));
+    if (isDesktop) setTranslate(clamp(currentTranslate, -getMaxScroll(), 0));
   });
 })();
