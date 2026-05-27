@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="obsidian" class="no-js">
+<html lang="pt-BR" data-theme="heritage" class="no-js">
 <head>
-  <script>document.documentElement.classList.replace('no-js','js-ready')</script>
+  <script>
+    document.documentElement.classList.replace('no-js','js-ready');
+    // Failsafe: garante que loader desapareca em max 3s mesmo se scripts falharem
+    setTimeout(function(){
+      var l = document.getElementById('loader');
+      if (l) l.classList.add('is-done');
+    }, 3000);
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="description" content="Ygor Santos — Treinador pessoal premium em Ibicuí, BA. Disciplina, foco e resultados para quem busca transformação real." />
-  <meta name="theme-color" content="#0A0C10" />
+  <meta name="theme-color" content="#0A0807" />
   <meta name="color-scheme" content="dark" />
 
-  <!-- Favicon SVG inline — hexagono da marca -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 4 L32 12 L32 26 L20 36 L8 26 L8 12 Z' fill='none' stroke='%236B7A90' stroke-width='1.4'/%3E%3Cpath d='M20 11 L26 15 L26 24 L20 30 L14 24 L14 15 Z' fill='%236B7A90' opacity='0.3'/%3E%3C/svg%3E" />
+  <!-- Favicon SVG inline — hexagono da marca em dourado -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M20 4 L32 12 L32 26 L20 36 L8 26 L8 12 Z' fill='none' stroke='%23D4B26A' stroke-width='1.4'/%3E%3Cpath d='M20 11 L26 15 L26 24 L20 30 L14 24 L14 15 Z' fill='%23D4B26A' opacity='0.3'/%3E%3C/svg%3E" />
   <meta name="robots" content="index, follow, max-image-preview:large" />
 
   <!-- Open Graph — URLs absolutas obrigatórias para preview em redes sociais -->
@@ -51,15 +58,15 @@
     html { -webkit-text-size-adjust: 100%; }
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      background: oklch(11% 0.008 250);
-      color: oklch(86% 0.008 250);
+      background: oklch(10% 0.008 60);
+      color: oklch(85% 0.02 80);
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
     .hero { position: relative; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
     .hero__media { position: absolute; inset: 0; z-index: 0; }
     .hero__media img { width: 100%; height: 100%; object-fit: cover; }
-    .loader { position: fixed; inset: 0; z-index: 9999; background: oklch(11% 0.008 250); display: grid; place-items: center; }
+    .loader { position: fixed; inset: 0; z-index: 9999; background: oklch(10% 0.008 60); display: grid; place-items: center; }
   </style>
 
   <!-- CSS -->
@@ -71,11 +78,13 @@
 </head>
 <body>
 
-  <!-- Fallback: garante visibilidade se JS falhar -->
+  <!-- Fallback: garante visibilidade se JS estiver desligado -->
   <noscript>
     <style>
+      [data-reveal] { opacity: 1 !important; transform: none !important; }
       [data-split], [data-split-lines] { visibility: visible !important; }
       .loader { display: none !important; }
+      .cursor, .scroll-progress { display: none !important; }
     </style>
   </noscript>
 
@@ -106,64 +115,6 @@
 
   <!-- ============ SCROLL PROGRESS BAR ============ -->
   <div class="scroll-progress" aria-hidden="true"><div class="scroll-progress__fill"></div></div>
-
- <!-- ============ THEME SWITCHER ============ -->
-<div class="theme-switcher" role="group" aria-label="Selecionar tema visual">
-  <button class="theme-switcher__toggle" aria-expanded="false" aria-label="Abrir seletor de temas">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="4"/>
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-    </svg>
-    <span class="theme-switcher__current">Obsidian</span>
-  </button>
-  <div class="theme-switcher__panel" role="menu">
-    <div class="theme-switcher__head">
-      <span>Atmosfera</span>
-      <small>5 versões para sua escolha</small>
-    </div>
-    <button class="theme-option" data-theme="obsidian" role="menuitemradio" aria-checked="true">
-      <span class="theme-option__swatch" style="background: linear-gradient(135deg, #0A0C10 30%, #6B7A90);"></span>
-      <span class="theme-option__label">
-        <strong>Obsidian</strong>
-        <em>Editorial · Default</em>
-      </span>
-      <span class="theme-option__check" aria-hidden="true"></span>
-    </button>
-    <button class="theme-option" data-theme="steel" role="menuitemradio" aria-checked="false">
-      <span class="theme-option__swatch" style="background: linear-gradient(135deg, #0C0E12 30%, #4A6E92);"></span>
-      <span class="theme-option__label">
-        <strong>Steel</strong>
-        <em>Apple · Corporate</em>
-      </span>
-      <span class="theme-option__check" aria-hidden="true"></span>
-    </button>
-    <button class="theme-option" data-theme="abyss" role="menuitemradio" aria-checked="false">
-      <span class="theme-option__swatch" style="background: linear-gradient(135deg, #08090C 30%, #5B6BD8);"></span>
-      <span class="theme-option__label">
-        <strong>Abyss</strong>
-        <em>Linear · Tech</em>
-      </span>
-      <span class="theme-option__check" aria-hidden="true"></span>
-    </button>
-    <button class="theme-option" data-theme="storm" role="menuitemradio" aria-checked="false">
-      <span class="theme-option__swatch" style="background: linear-gradient(135deg, #0A0E1A 30%, #00D4FF);"></span>
-      <span class="theme-option__label">
-        <strong>Storm</strong>
-        <em>Aurora · Cinematic</em>
-      </span>
-      <span class="theme-option__check" aria-hidden="true"></span>
-    </button>
-    <button class="theme-option" data-theme="heritage" role="menuitemradio" aria-checked="false">
-      <span class="theme-option__swatch" style="background: linear-gradient(135deg, #0A0807 30%, #D4B26A);"></span>
-      <span class="theme-option__label">
-        <strong>Heritage</strong>
-        <em>Champagne · Clássico</em>
-      </span>
-      <span class="theme-option__check" aria-hidden="true"></span>
-    </button>
-  </div>
-</div>
-
 
   <!-- ============ NAV ============ -->
   <header class="nav" id="nav">
@@ -797,7 +748,6 @@
   <script src="https://cdn.jsdelivr.net/npm/split-type@0.3.4/umd/index.min.js" defer></script>
 
   <script src="assets/js/lenis-init.js" defer></script>
-  <script src="assets/js/theme-switcher.js" defer></script>
   <script src="assets/js/interactions.js" defer></script>
   <script src="assets/js/cursor.js" defer></script>
   <script src="assets/js/magnetic.js" defer></script>
@@ -920,7 +870,18 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js');
+        navigator.serviceWorker.register('sw.js').then((reg) => {
+          // Forca update toda vez que a pagina carrega
+          reg.update();
+
+          // Quando um novo SW assume controle, recarrega a pagina (cache busted)
+          let refreshing = false;
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            refreshing = true;
+            window.location.reload();
+          });
+        });
       });
     }
     document.getElementById('year').textContent = new Date().getFullYear();

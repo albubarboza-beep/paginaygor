@@ -137,7 +137,8 @@
       }
 
       allSpyLinks.forEach((l) => {
-        l.classList.toggle('is-active', l.getAttribute('href') === '#' + currentId);
+        const href = l.getAttribute('href');
+        l.classList.toggle('is-active', currentId !== null && href === '#' + currentId);
       });
       spyTicking = false;
     };

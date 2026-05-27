@@ -309,7 +309,7 @@ strong { color: var(--fg-0); font-weight: 500; }
   body { font-size: 12pt; line-height: 1.5; }
 
   .loader, .noise, .cursor, .scroll-progress,
-  .theme-switcher, .wa-float, .hero__marquee,
+  .wa-float, .hero__marquee,
   .hero__scroll, .nav__burger, .mobile-menu,
   .hero__overlay, .metodo__card-bg, .cta-final__bg { display: none !important; }
 

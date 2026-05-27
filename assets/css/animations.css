@@ -1,41 +1,43 @@
 /* ============================================
-   REVEAL — controlado por GSAP
+   REVEAL — controlado por IntersectionObserver + GSAP enhancement
+   PROGRESSIVE ENHANCEMENT: so esconde se JS estiver ativo (.js-ready)
    ============================================ */
 
-[data-reveal] {
+.js-ready [data-reveal] {
   opacity: 0;
   transform: translateY(40px);
+  transition: opacity 0.7s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
+              transform 0.7s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
   will-change: opacity, transform;
 }
 
-[data-reveal].is-visible {
+.js-ready [data-reveal].is-visible {
   opacity: 1;
   transform: translateY(0);
-  will-change: auto; /* libera GPU layer apos reveal */
+  will-change: auto;
+}
+
+/* SEM .js-ready (JS off ou falhou): elementos visiveis normalmente */
+[data-reveal] {
+  opacity: 1;
+  transform: none;
 }
 
 /* ============================================
-   SPLIT TYPE — preparação
+   SPLIT TYPE — texto sempre visivel para LCP
+   GSAP anima os chars individualmente quando carrega
    ============================================ */
 
-/*
-   Split text: esconde SÓ se JS está disponível.
-   Se JS falhar, o texto permanece visível (progressive enhancement).
-*/
-.js-ready [data-split],
-.js-ready [data-split-lines] {
-  visibility: hidden;
-}
-
-.js-ready [data-split].split-ready,
-.js-ready [data-split-lines].split-ready {
+/* Texto sempre visivel — nao esconder para nao prejudicar LCP */
+[data-split],
+[data-split-lines] {
   visibility: visible;
 }
 
-/* Fallback: sem .js-ready (JS off/falhou), texto é visível normalmente */
-[data-split]:not(.split-ready),
-[data-split-lines]:not(.split-ready) {
-  visibility: visible;
+/* Quando SplitType processa, chars sao animados pelo GSAP */
+.js-ready [data-split].split-ready .char,
+.js-ready [data-split-lines].split-ready .line__inner {
+  /* GSAP controla via inline style */
 }
 
 .char,

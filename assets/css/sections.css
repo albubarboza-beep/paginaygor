@@ -60,10 +60,27 @@
   pointer-events: none;
 }
 
+/* MOBILE: overlay AGRESSIVO para mascarar texto baked-in da foto.
+   3 camadas: cobertura forte no topo + radial atrás do H1 + base solida */
 @media (max-width: 767px) {
-  .hero__overlay { background: var(--hero-overlay-mobile); }
+  .hero__overlay {
+    background:
+      /* Camada 1: cobertura forte no topo (onde "YGOR SANTOS" aparece na foto) */
+      linear-gradient(180deg,
+        oklch(0% 0 0 / 0.65) 0%,
+        oklch(0% 0 0 / 0.55) 20%,
+        oklch(0% 0 0 / 0.35) 45%,
+        transparent 70%),
+      /* Camada 2: gradiente lateral para reforçar o lado esquerdo (texto do H1) */
+      linear-gradient(90deg,
+        oklch(0% 0 0 / 0.4) 0%,
+        oklch(0% 0 0 / 0.15) 60%,
+        transparent 100%),
+      /* Camada 3: base sólida + tema gradient */
+      var(--hero-overlay-mobile);
+  }
   .hero__overlay::before {
-    background: radial-gradient(ellipse at 70% 30%, transparent 30%, oklch(0% 0 0 / 0.6) 100%);
+    background: radial-gradient(ellipse at 50% 50%, transparent 25%, oklch(0% 0 0 / 0.55) 100%);
   }
 }
 
@@ -114,6 +131,7 @@
   }
 }
 
+.hero__kicker-text { display: inline-block; line-height: 1; }
 .hero__kicker-mobile { display: inline; }
 .hero__kicker-desktop { display: none; }
 
@@ -156,8 +174,13 @@
   letter-spacing: -0.03em;
   color: var(--fg-0);
   margin-bottom: var(--s-5);
-  text-shadow: 0 2px 32px oklch(0% 0 0 / .4);
+  text-shadow:
+    0 2px 12px oklch(0% 0 0 / .8),
+    0 4px 32px oklch(0% 0 0 / .6),
+    0 0 60px oklch(0% 0 0 / .4);
   text-wrap: balance;
+  position: relative;
+  z-index: 1;
 }
 
 @media (min-width: 768px) {
@@ -1411,11 +1434,13 @@
 }
 
 /* ============================================
-   MOBILE-FIRST: padding vertical de seções
-   128px (s-10) e maior é excessivo em telas pequenas
-   Reduz para 80px em telas <768px
+   MOBILE-FIRST OVERRIDES (consolidados)
+   - Padding vertical reduzido (s-10 = 128px e muito em mobile)
+   - GPU relief: reduz blur stack em telas pequenas
+   - Section titles menores, sem hover effects
    ============================================ */
 @media (max-width: 767px) {
+  /* Padding vertical das secoes */
   .metodo,
   .resultados,
   .processo,
@@ -1426,17 +1451,11 @@
     padding-bottom: var(--s-9);
   }
 
+  /* Section heads e titulos */
   .section-head { margin-bottom: var(--s-7); }
   .section-title { font-size: var(--fs-2xl); max-width: 100%; }
-  .section-title:hover { font-variation-settings: 'opsz' 144, 'SOFT' 50; } /* sem hover effect em mobile */
-}
 
-/* ============================================
-   MOBILE GPU RELIEF — reduz blur stack
-   3+ backdrop-filters simultaneos causam jank
-   em dispositivos mid-range
-   ============================================ */
-@media (max-width: 767px) {
+  /* GPU relief: reduz blur para evitar jank */
   .hero__kicker {
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);

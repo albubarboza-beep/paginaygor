@@ -1,10 +1,11 @@
 /**
  * sw.js
- * Service Worker — Network First com cache fallback.
- * Paths relativos para compatibilidade com qualquer deploy.
+ * Service Worker — Network First com fallback para cache.
+ * Detecta automaticamente nova versao e invalida caches antigos.
  */
 
-const CACHE_NAME = 'ygor-premium-v1.5.0-mobilefirst';
+const CACHE_VERSION = 'v2.2.0-audit-clean';
+const CACHE_NAME = `ygor-premium-${CACHE_VERSION}`;
 
 const urlsToCache = [
   './',
@@ -15,7 +16,6 @@ const urlsToCache = [
   './assets/css/sections.css',
   './assets/css/animations.css',
   './assets/js/lenis-init.js',
-  './assets/js/theme-switcher.js',
   './assets/js/interactions.js',
   './assets/js/cursor.js',
   './assets/js/magnetic.js',
@@ -28,23 +28,34 @@ const urlsToCache = [
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
+    caches.open(CACHE_NAME).then((cache) =>
+      // addAll falha se UM recurso falhar. Use Promise.all com individual addrequests para resiliencia.
+      Promise.all(
+        urlsToCache.map((url) =>
+          cache.add(url).catch(() => null) // ignora falhas individuais
+        )
+      )
+    )
   );
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((names) =>
-      Promise.all(names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n)))
-    )
+      Promise.all(
+        names
+          .filter((n) => n.startsWith('ygor-premium-') && n !== CACHE_NAME)
+          .map((n) => caches.delete(n))
+      )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
   if (!event.request.url.startsWith('http')) return;
+  if (event.request.method !== 'GET') return;
 
-  // CDN resources: cache-first (fontes, libs nao mudam com frequencia)
+  // CDN: cache-first (fontes/libs sao estaveis)
   if (event.request.url.includes('cdn.jsdelivr.net') ||
       event.request.url.includes('fonts.googleapis.com') ||
       event.request.url.includes('fonts.gstatic.com')) {
@@ -52,21 +63,25 @@ self.addEventListener('fetch', (event) => {
       caches.match(event.request).then((cached) => {
         if (cached) return cached;
         return fetch(event.request).then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
           return response;
-        });
+        }).catch(() => cached); // fallback se rede falhar
       })
     );
     return;
   }
 
-  // App resources: network-first
+  // App resources: network-first com fallback para cache
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        if (response && response.status === 200 && response.type === 'basic') {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        }
         return response;
       })
       .catch(() => caches.match(event.request))

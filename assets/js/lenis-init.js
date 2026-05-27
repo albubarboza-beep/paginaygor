@@ -1,16 +1,23 @@
 /**
  * lenis-init.js
- * Smooth scroll. Desativado com reduced motion (scroll nativo é mais confortável).
+ * Smooth scroll APENAS desktop. Mobile usa scroll nativo (mais confiavel + sem bug ScrollTrigger).
  */
 (() => {
   if (!window.Lenis) return;
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+  // Mobile/touch: nao usa Lenis (scroll nativo + ScrollTrigger funcionam melhor)
+  if (isTouch || prefersReduced) {
+    // Anchor links nativos (CSS scroll-behavior: smooth ja cuida)
+    return;
+  }
 
   const lenis = new window.Lenis({
-    duration: prefersReduced ? 0.6 : 1.15,
+    duration: 1.15,
     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    smoothWheel: !prefersReduced,
+    smoothWheel: true,
     smoothTouch: false,
     touchMultiplier: 2,
     wheelMultiplier: 1,
@@ -50,7 +57,7 @@
         const target = document.querySelector(id);
         if (target) {
           e.preventDefault();
-          lenis.scrollTo(target, { offset: -80, duration: prefersReduced ? 0.6 : 1.4 });
+          lenis.scrollTo(target, { offset: -80, duration: 1.4 });
         }
       }
     });
