@@ -3,7 +3,10 @@
  * Carrossel de certificados.
  * Mobile (<1024px): scroll horizontal nativo com scroll-snap (CSS).
  * Desktop (>=1024px): drag, mouse, botoes prev/next via transform.
- * Progressive enhancement: se JS falhar, scroll nativo funciona em todas telas.
+ * 
+ * CORREÇÕES:
+ * - Event listeners globais (mousemove/mouseup) adicionados/removidos dinamicamente
+ * - Só existem quando isDesktop=true, evitando desperdício de CPU no mobile
  */
 (() => {
   const wrapper = document.querySelector('.metodo__carousel');
@@ -54,16 +57,68 @@
     updateButtons();
   };
 
+  // ── Event handlers (registrados/removidos dinamicamente) ─────
+  const onMouseDown = (e) => {
+    if (!isDesktop) return;
+    isDragging = true;
+    startX = e.clientX;
+    scrollLeft = currentTranslate;
+    lastX = e.clientX;
+    lastTime = Date.now();
+    track.style.transition = 'none';
+    track.style.cursor = 'grabbing';
+    e.preventDefault();
+  };
+
+  const onMouseMove = (e) => {
+    if (!isDragging || !isDesktop) return;
+    const dx = e.clientX - startX;
+    const now = Date.now();
+    const dt = now - lastTime;
+    if (dt > 0) velocity = (e.clientX - lastX) / dt;
+    lastX = e.clientX;
+    lastTime = now;
+    setTranslate(scrollLeft + dx);
+  };
+
+  const onMouseUp = () => {
+    if (!isDragging) return;
+    isDragging = false;
+    track.style.transition = '';
+    track.style.cursor = '';
+    const momentum = velocity * 150;
+    setTranslate(currentTranslate + momentum);
+    velocity = 0;
+  };
+
+  const preventClick = (e) => {
+    if (!isDesktop) return;
+    if (Math.abs(currentTranslate - scrollLeft) > 5) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  // ── Desktop: registra listeners ─────────────────────────────
   const enableDesktop = () => {
     wrapper.classList.add('js-carousel');
     setTranslate(0);
     updateButtons();
+    track.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+    track.addEventListener('click', preventClick, true);
   };
 
+  // ── Mobile: remove listeners ────────────────────────────────
   const enableMobile = () => {
     wrapper.classList.remove('js-carousel');
     track.style.transform = '';
     currentTranslate = 0;
+    track.removeEventListener('mousedown', onMouseDown);
+    window.removeEventListener('mousemove', onMouseMove);
+    window.removeEventListener('mouseup', onMouseUp);
+    track.removeEventListener('click', preventClick, true);
   };
 
   if (isDesktop) enableDesktop();
@@ -94,47 +149,6 @@
       setTranslate(currentTranslate - getCardWidth());
     });
   }
-
-  track.addEventListener('mousedown', (e) => {
-    if (!isDesktop) return;
-    isDragging = true;
-    startX = e.clientX;
-    scrollLeft = currentTranslate;
-    lastX = e.clientX;
-    lastTime = Date.now();
-    track.style.transition = 'none';
-    track.style.cursor = 'grabbing';
-    e.preventDefault();
-  });
-
-  window.addEventListener('mousemove', (e) => {
-    if (!isDragging || !isDesktop) return;
-    const dx = e.clientX - startX;
-    const now = Date.now();
-    const dt = now - lastTime;
-    if (dt > 0) velocity = (e.clientX - lastX) / dt;
-    lastX = e.clientX;
-    lastTime = now;
-    setTranslate(scrollLeft + dx);
-  });
-
-  window.addEventListener('mouseup', () => {
-    if (!isDragging) return;
-    isDragging = false;
-    track.style.transition = '';
-    track.style.cursor = '';
-    const momentum = velocity * 150;
-    setTranslate(currentTranslate + momentum);
-    velocity = 0;
-  });
-
-  track.addEventListener('click', (e) => {
-    if (!isDesktop) return;
-    if (Math.abs(currentTranslate - scrollLeft) > 5) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  }, true);
 
   window.addEventListener('resize', () => {
     if (isDesktop) setTranslate(clamp(currentTranslate, -getMaxScroll(), 0));

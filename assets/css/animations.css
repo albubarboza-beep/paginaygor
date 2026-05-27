@@ -8,13 +8,12 @@
   transform: translateY(40px);
   transition: opacity 0.7s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)),
               transform 0.7s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
-  will-change: opacity, transform;
+  /* NOTA: will-change definido inline pelo JS, removido após transição */
 }
 
 .js-ready [data-reveal].is-visible {
   opacity: 1;
   transform: translateY(0);
-  will-change: auto;
 }
 
 /* SEM .js-ready (JS off ou falhou): elementos visiveis normalmente */
@@ -23,28 +22,21 @@
   transform: none;
 }
 
-/* ============================================
-   SPLIT TYPE — texto sempre visivel para LCP
+/* ═══════════════════════════════════════════════════
+   SPLIT TYPE — texto sempre visível para LCP
    GSAP anima os chars individualmente quando carrega
-   ============================================ */
+   ═══════════════════════════════════════════════════ */
 
-/* Texto sempre visivel — nao esconder para nao prejudicar LCP */
 [data-split],
 [data-split-lines] {
   visibility: visible;
-}
-
-/* Quando SplitType processa, chars sao animados pelo GSAP */
-.js-ready [data-split].split-ready .char,
-.js-ready [data-split-lines].split-ready .line__inner {
-  /* GSAP controla via inline style */
 }
 
 .char,
 .word,
 .line {
   display: inline-block;
-  will-change: transform, opacity;
+  /* will-change definido inline pelo JS, removido após animação */
 }
 
 [data-split-lines] .line {
@@ -56,13 +48,12 @@
   display: inline-block;
 }
 
-/* ============================================
+/* ═══════════════════════════════════════════════════
    REDUCED MOTION — versão suave (WCAG 2.3.3)
    Mantém fades e reveals, remove só motion pesado.
-   ============================================ */
+   ═══════════════════════════════════════════════════ */
 
 @media (prefers-reduced-motion: reduce) {
-  /* Reveals: fade instantâneo sem translateY */
   [data-reveal] {
     transform: none !important;
     transition: opacity 0.3s ease !important;
@@ -73,7 +64,6 @@
     will-change: opacity !important;
   }
 
-  /* Animações contínuas pesadas: desliga */
   .hero__media img {
     animation: none !important;
   }
@@ -98,7 +88,6 @@
     animation: none !important;
   }
 
-  /* Loader: mostra direto sem pulso */
   .loader__mark {
     animation: none !important;
     opacity: 1 !important;

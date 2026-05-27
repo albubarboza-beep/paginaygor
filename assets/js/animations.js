@@ -1,27 +1,32 @@
 /**
  * animations.js
  * Orquestracao reveal + GSAP + SplitType + counters.
- *
- * ESTRATEGIA:
- * - IntersectionObserver e o trigger PRIMARIO para reveals (funciona sempre, mobile incluido)
- * - GSAP entra como enhancement (split text, counters, hero entrance)
- * - Safety net: se nada funcionar em 3s, forca tudo visivel
- *
- * Isso resolve o bug onde ScrollTrigger+Lenis nao disparava no touch mobile,
- * deixando [data-reveal] preso em opacity:0.
+ * 
+ * CORREÇÕES:
+ * - Proteção contra dupla inicialização (flag `_booted`)
+ * - Counters: verificação `_counted` para evitar reanimação
+ * - will-change removido após animação para liberar VRAM
+ * - Safety nets mantidos como fallback
  */
 (() => {
+  // ── Guard: previne dupla inicialização ─────────────────
+  if (window.__animationsBooted) return;
+  window.__animationsBooted = true;
+
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
-  // ============================================
-  // 1. REVEAL VIA INTERSECTION OBSERVER (PRIMARIO, BULLETPROOF)
-  // ============================================
+  // ════════════════════════════════════════════════════════
+  // 1. REVEAL VIA INTERSECTION OBSERVER (PRIMARIO)
+  // ════════════════════════════════════════════════════════
   const revealEls = document.querySelectorAll('[data-reveal]');
 
-  // Marca reveals do hero como visiveis imediatamente (sao animados pelo GSAP timeline)
+  // Marca reveals do hero como visiveis imediatamente
   revealEls.forEach((el) => {
-    if (el.closest('.hero')) el.classList.add('is-visible');
+    if (el.closest('.hero')) {
+      el.classList.add('is-visible');
+      el.setAttribute('data-revealed', 'hero');
+    }
   });
 
   if ('IntersectionObserver' in window) {
@@ -29,11 +34,23 @@
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const el = entry.target;
+          // Skip: já visível
+          if (el.classList.contains('is-visible')) {
+            io.unobserve(el);
+            return;
+          }
           const delay = parseFloat(el.dataset.revealDelay || '0') * 1000;
-          if (delay > 0) {
-            setTimeout(() => el.classList.add('is-visible'), delay);
-          } else {
+          const reveal = () => {
             el.classList.add('is-visible');
+            // Cleanup will-change após transição (libera VRAM)
+            el.addEventListener('transitionend', () => {
+              el.style.willChange = 'auto';
+            }, { once: true });
+          };
+          if (delay > 0) {
+            setTimeout(reveal, delay);
+          } else {
+            reveal();
           }
           io.unobserve(el);
         }
@@ -48,30 +65,28 @@
     revealEls.forEach((el) => el.classList.add('is-visible'));
   }
 
-  // ============================================
-  // 2. SAFETY NETS — escalonados para nao deixar conteudo invisivel
-  // ============================================
-  // 1.5s: SplitType (hero precisa aparecer rapido — LCP)
+  // ════════════════════════════════════════════════════════
+  // 2. SAFETY NETS
+  // ════════════════════════════════════════════════════════
   setTimeout(() => {
     document.querySelectorAll('[data-split]:not(.split-ready), [data-split-lines]:not(.split-ready)').forEach((el) => {
       el.classList.add('split-ready');
     });
   }, 1500);
 
-  // 2.5s: reveals fora do viewport caso IntersectionObserver/scroll nao funcione
   setTimeout(() => {
     document.querySelectorAll('[data-reveal]:not(.is-visible)').forEach((el) => {
       el.classList.add('is-visible');
     });
   }, 2500);
 
-  // ============================================
-  // 3. GSAP ENHANCEMENT (quando disponivel)
-  // ============================================
+  // ════════════════════════════════════════════════════════
+  // 3. GSAP ENHANCEMENT
+  // ════════════════════════════════════════════════════════
   const boot = (attempts) => {
     attempts = attempts || 0;
     if (!window.gsap) {
-      if (attempts > 30) return; // 1.5s max espera
+      if (attempts > 30) return;
       setTimeout(() => boot(attempts + 1), 50);
       return;
     }
@@ -86,7 +101,7 @@
     const charY = prefersReduced ? 0 : 110;
     const stag = prefersReduced ? 0 : 0.025;
 
-    // ---- SPLIT TYPE ----
+    // ── SPLIT TYPE ──────────────────────────────────────
     if (SPT) {
       document.querySelectorAll('[data-split]').forEach((el) => {
         try {
@@ -114,9 +129,7 @@
       });
     }
 
-    // ---- HERO ENTRANCE TIMELINE ----
-    // Anima chars do tagline, kicker, actions, scroll, marquee.
-    // Sem afetar LCP: tagline ja esta visivel desde o inicio.
+    // ── HERO ENTRANCE TIMELINE ──────────────────────────
     try {
       const hero = document.querySelector('.hero');
       if (hero) {
@@ -130,14 +143,17 @@
 
         if (kicker) tl.from(kicker, { opacity: 0, y: prefersReduced ? 0 : 16, duration: dur * 0.9 });
 
-        // Anima chars se SplitType processou (do contrario fica como texto normal — sem flicker)
         if (chars && chars.length > 0) {
           tl.from(chars, {
             yPercent: charY,
             opacity: 0,
             duration: dur * 1.1,
             stagger: stag,
-            immediateRender: false // nao define chars como opacity:0 inicialmente — evita flash
+            immediateRender: false,
+            onComplete: () => {
+              // Libera will-change dos chars após animação
+              chars.forEach((c) => { c.style.willChange = 'auto'; });
+            }
           }, kicker ? '-=0.5' : 0);
         }
 
@@ -148,9 +164,9 @@
         if (scroll) tl.from(scroll, { opacity: 0, duration: dur * 0.8 }, '-=0.5');
         if (marquee) tl.from(marquee, { opacity: 0, duration: dur * 0.8 }, '-=0.6');
       }
-    } catch (e) {}
+    } catch (e) { /* silent */ }
 
-    // ---- SPLIT LINES SCROLL (apenas quando ST disponivel) ----
+    // ── SPLIT LINES SCROLL ──────────────────────────────
     if (ST) {
       document.querySelectorAll('[data-split-lines]').forEach((el) => {
         const lines = el.querySelectorAll('.line__inner');
@@ -161,18 +177,26 @@
           duration: dur * 1.1,
           ease: 'expo.out',
           stagger: prefersReduced ? 0.05 : 0.1,
-          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none', once: true }
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none', once: true },
+          onComplete: () => {
+            lines.forEach((l) => { l.style.willChange = 'auto'; });
+          }
         });
       });
     }
 
-    // ---- COUNTERS (IntersectionObserver-based, robusto) ----
+    // ── COUNTERS ────────────────────────────────────────
     const counters = document.querySelectorAll('[data-counter]');
     if (counters.length && 'IntersectionObserver' in window) {
       const countIO = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           const el = entry.target;
+          if (el.dataset.counted === 'true') {
+            countIO.unobserve(el);
+            return;
+          }
+          el.dataset.counted = 'true';
           const target = parseInt(el.dataset.counter, 10);
           if (isNaN(target)) return;
           const obj = { val: 0 };
@@ -188,14 +212,15 @@
 
       counters.forEach((el) => countIO.observe(el));
     } else {
-      // Sem GSAP/IO: mostra o numero final direto
       counters.forEach((el) => {
+        if (el.dataset.counted === 'true') return;
+        el.dataset.counted = 'true';
         const t = parseInt(el.dataset.counter, 10);
         if (!isNaN(t)) el.textContent = t.toLocaleString('pt-BR');
       });
     }
 
-    // ---- HERO PARALLAX (desktop apenas, com reduced motion respeitado) ----
+    // ── HERO PARALLAX (desktop apenas) ──────────────────
     if (ST && !prefersReduced && !isMobile) {
       const heroImg = document.querySelector('.hero__media img');
       if (heroImg) {
@@ -213,21 +238,25 @@
         });
       }
     }
-
   };
 
-  // SAFETY NET para counters caso GSAP nao carregue em 4s
+  // ════════════════════════════════════════════════════════
+  // 4. SAFETY NET PARA COUNTERS
+  // ════════════════════════════════════════════════════════
   setTimeout(() => {
     document.querySelectorAll('[data-counter]').forEach((el) => {
-      if (el.textContent === '0' || el.textContent.trim() === '') {
-        const t = parseInt(el.dataset.counter, 10);
-        if (!isNaN(t)) el.textContent = t.toLocaleString('pt-BR');
+      if (el.dataset.counted === 'true') return;
+      const t = parseInt(el.dataset.counter, 10);
+      if (!isNaN(t) && (el.textContent === '0' || el.textContent.trim() === '')) {
+        el.textContent = t.toLocaleString('pt-BR');
+        el.dataset.counted = 'true';
       }
     });
   }, 4000);
 
+  // ── BOOT ──────────────────────────────────────────────
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => boot(0));
+    document.addEventListener('DOMContentLoaded', () => boot(0), { once: true });
   } else {
     boot(0);
   }

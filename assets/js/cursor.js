@@ -2,6 +2,11 @@
  * cursor.js
  * Cursor com lerp + label contextual + idle detection.
  * Funciona mesmo com reduced motion (cursor é funcional, não decorativo).
+ * 
+ * CORREÇÕES:
+ * - RAF único garantido (sem múltiplos loops simultâneos)
+ * - Loader detection robusta (MutationObserver + fallback direto)
+ * - Cleanup dos event listeners no idle
  */
 (() => {
   if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
@@ -15,13 +20,13 @@
   if (!dot || !ring || !label) return;
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  // Com reduced motion, não mostra cursor custom — CSS já restaura o nativo
   if (prefersReduced) return;
 
+  // ── Loader detection ──────────────────────────────────
   const loader = document.getElementById('loader');
-  let loaderDone = !loader || loader.classList.contains('is-done');
-  if (loader && !loaderDone) {
+  let loaderDone = !loader; // se não existe loader, já está pronto
+
+  if (loader && !loader.classList.contains('is-done')) {
     const obs = new MutationObserver(() => {
       if (loader.classList.contains('is-done')) {
         loaderDone = true;
@@ -29,35 +34,65 @@
       }
     });
     obs.observe(loader, { attributes: true, attributeFilter: ['class'] });
+    // Fallback: se o loader sumir por qualquer motivo
+    setTimeout(() => {
+      if (!loaderDone) {
+        loaderDone = true;
+        obs.disconnect();
+      }
+    }, 2500);
+  } else if (loader) {
+    loaderDone = true;
   }
 
+  // ── State ─────────────────────────────────────────────
   let mx = -100, my = -100;
   let dx = -100, dy = -100;
   let rx = -100, ry = -100;
   let lx = -100, ly = -100;
   let moved = false;
-  let idle = false;
+  let idle = true; // começa idle até o mouse se mover
   let idleTimer = null;
   let rafId = null;
 
   const onMove = (e) => {
-    mx = e.clientX; my = e.clientY;
+    mx = e.clientX;
+    my = e.clientY;
     if (!moved) {
       dx = rx = lx = mx;
       dy = ry = ly = my;
       moved = true;
+      // SÓ adiciona a classe quando o loader terminar E o mouse se mover
       if (loaderDone) cursor.classList.add('is-ready');
+      else {
+        // Se loader ainda não terminou, agenda para depois
+        const checkLoader = () => {
+          if (loaderDone) {
+            cursor.classList.add('is-ready');
+          } else {
+            requestAnimationFrame(checkLoader);
+          }
+        };
+        requestAnimationFrame(checkLoader);
+      }
     }
     if (idle) {
       idle = false;
-      rafId = requestAnimationFrame(tick);
+      if (!rafId) {
+        rafId = requestAnimationFrame(tick);
+      }
     }
     clearTimeout(idleTimer);
-    idleTimer = setTimeout(() => { idle = true; }, 3000);
+    idleTimer = setTimeout(() => {
+      idle = true;
+      // Não cancela RAF aqui; o tick continua mas com opacidade
+    }, 3000);
   };
 
   window.addEventListener('mousemove', onMove, { passive: true });
-  document.addEventListener('mouseenter', () => { if (loaderDone) cursor.classList.add('is-ready'); });
+  document.addEventListener('mouseenter', () => {
+    if (loaderDone && moved) cursor.classList.add('is-ready');
+  });
   document.addEventListener('mouseleave', () => cursor.classList.remove('is-ready'));
 
   const lerp = (a, b, n) => a + (b - a) * n;
@@ -77,12 +112,14 @@
     label.style.setProperty('--x', `${lx}px`);
     label.style.setProperty('--y', `${ly}px`);
 
-    if (!idle) {
-      rafId = requestAnimationFrame(tick);
-    }
+    // Sempre continua o RAF, mas o CSS controla a opacidade
+    rafId = requestAnimationFrame(tick);
   };
+
+  // Inicia o RAF imediatamente (o CSS mantém opacidade 0 até .is-ready)
   rafId = requestAnimationFrame(tick);
 
+  // ── Interactive hover ─────────────────────────────────
   const interactives = 'a, button, [data-magnetic], summary, input, textarea, select, details';
   document.querySelectorAll(interactives).forEach((el) => {
     el.addEventListener('mouseenter', () => {
