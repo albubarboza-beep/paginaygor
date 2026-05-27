@@ -1,10 +1,10 @@
 /**
  * sw.js
  * Service Worker — Network First com fallback para cache.
- * Detecta automaticamente nova versao e invalida caches antigos.
+ * Auto-cleanup de caches antigos.
  */
 
-const CACHE_VERSION = 'v2.2.0-audit-clean';
+const CACHE_VERSION = 'v3.0.0-nasa-mobile-first';
 const CACHE_NAME = `ygor-premium-${CACHE_VERSION}`;
 
 const urlsToCache = [
@@ -15,12 +15,12 @@ const urlsToCache = [
   './assets/css/components.css',
   './assets/css/sections.css',
   './assets/css/animations.css',
-  './assets/js/lenis-init.js',
   './assets/js/interactions.js',
-  './assets/js/cursor.js',
-  './assets/js/magnetic.js',
   './assets/js/animations.js',
   './assets/js/carousel.js',
+  './assets/js/magnetic.js',
+  './assets/js/cursor.js',
+  './assets/js/lenis-init.js',
   './img/ygorimagem.png',
   './img/igormobile.png'
 ];
@@ -29,11 +29,8 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) =>
-      // addAll falha se UM recurso falhar. Use Promise.all com individual addrequests para resiliencia.
       Promise.all(
-        urlsToCache.map((url) =>
-          cache.add(url).catch(() => null) // ignora falhas individuais
-        )
+        urlsToCache.map((url) => cache.add(url).catch(() => null))
       )
     )
   );
@@ -55,7 +52,7 @@ self.addEventListener('fetch', (event) => {
   if (!event.request.url.startsWith('http')) return;
   if (event.request.method !== 'GET') return;
 
-  // CDN: cache-first (fontes/libs sao estaveis)
+  // CDN: cache-first
   if (event.request.url.includes('cdn.jsdelivr.net') ||
       event.request.url.includes('fonts.googleapis.com') ||
       event.request.url.includes('fonts.gstatic.com')) {
@@ -68,13 +65,13 @@ self.addEventListener('fetch', (event) => {
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
           }
           return response;
-        }).catch(() => cached); // fallback se rede falhar
+        }).catch(() => cached);
       })
     );
     return;
   }
 
-  // App resources: network-first com fallback para cache
+  // App resources: network-first com fallback cache
   event.respondWith(
     fetch(event.request)
       .then((response) => {

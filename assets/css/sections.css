@@ -22,16 +22,15 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  /* Ken Burns cinematografico com escala maior para profundidade */
-  animation: kenBurns 20s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+  /* Ken Burns cinematografico EXTREMO — 3 fases de movimento */
+  animation: kenBurnsAdvanced 25s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
   transform-origin: 65% 30%;
-  /* Profundidade: leve saturacao e contraste para efeito cinematografico */
+  /* Profundidade base */
   filter: saturate(1.1) contrast(1.08) brightness(0.95);
-}
-
-@keyframes kenBurns {
-  0%   { transform: scale(1.0); }
-  100% { transform: scale(1.08); }
+  /* Permite GPU acceleration */
+  will-change: transform, filter;
+  /* Parallax ao scroll via JS (--scroll-progress 0-1) */
+  --scroll-progress: 0;
 }
 
 @media (max-width: 767px) {
@@ -42,7 +41,7 @@
   }
 }
 
-/* Overlay principal */
+/* Overlay principal - tema heritage */
 .hero__overlay {
   position: absolute;
   inset: 0;
@@ -51,36 +50,90 @@
   pointer-events: none;
 }
 
-/* Vinheta cinematografica — cria profundidade de campo nas bordas */
+/* Vinheta cinematografica — profundidade de campo + light leak dourado */
 .hero__overlay::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 40%, oklch(0% 0 0 / 0.5) 100%);
+  background:
+    /* Vinheta circular */
+    radial-gradient(ellipse at center, transparent 40%, oklch(0% 0 0 / 0.5) 100%),
+    /* Light leak dourado animado */
+    radial-gradient(circle at 80% 20%, oklch(78% 0.13 85 / 0.15) 0%, transparent 40%);
   pointer-events: none;
+  animation: lightLeak 8s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+  will-change: opacity, transform;
 }
 
-/* MOBILE: overlay AGRESSIVO para mascarar texto baked-in da foto.
-   3 camadas: cobertura forte no topo + radial atrás do H1 + base solida */
+/* Grain dinâmico — filme cinematográfico */
+.hero__overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  animation: grainShift 0.25s steps(3) infinite;
+}
+
+@keyframes grainShift {
+  0%   { transform: translate3d(0, 0, 0); }
+  33%  { transform: translate3d(-1%, 1%, 0); }
+  66%  { transform: translate3d(1%, -1%, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* MOBILE: overlay AGRESSIVO para mascarar texto baked-in da foto + GPU relief */
 @media (max-width: 767px) {
   .hero__overlay {
     background:
-      /* Camada 1: cobertura forte no topo (onde "YGOR SANTOS" aparece na foto) */
       linear-gradient(180deg,
         oklch(0% 0 0 / 0.65) 0%,
         oklch(0% 0 0 / 0.55) 20%,
         oklch(0% 0 0 / 0.35) 45%,
         transparent 70%),
-      /* Camada 2: gradiente lateral para reforçar o lado esquerdo (texto do H1) */
       linear-gradient(90deg,
         oklch(0% 0 0 / 0.4) 0%,
         oklch(0% 0 0 / 0.15) 60%,
         transparent 100%),
-      /* Camada 3: base sólida + tema gradient */
       var(--hero-overlay-mobile);
   }
   .hero__overlay::before {
-    background: radial-gradient(ellipse at 50% 50%, transparent 25%, oklch(0% 0 0 / 0.55) 100%);
+    background:
+      radial-gradient(ellipse at 50% 50%, transparent 25%, oklch(0% 0 0 / 0.55) 100%),
+      radial-gradient(circle at 80% 30%, oklch(78% 0.13 85 / 0.2) 0%, transparent 50%);
+    animation-duration: 12s; /* mais lento = menos GPU mobile */
+  }
+  /* Mobile: grain desabilitado por padrão (economiza bateria) */
+  .hero__overlay::after {
+    display: none;
+  }
+  /* Ken Burns mais lento e suave no mobile */
+  .hero__media img {
+    animation-duration: 35s;
+  }
+}
+
+/* PARALLAX 3D ATIVADO POR JS — desktop apenas */
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  .hero__media {
+    perspective: 1200px;
+    transform-style: preserve-3d;
+  }
+
+  .hero__media img {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
+    transform-origin: 50% 50%;
+  }
+
+  /* JS injeta --mouse-x e --mouse-y entre -1 e 1 */
+  .hero[data-mouse-active] .hero__media img {
+    transform: scale(1.12)
+               translate3d(calc(var(--mouse-x, 0) * -15px), calc(var(--mouse-y, 0) * -15px), 0)
+               rotateX(calc(var(--mouse-y, 0) * -2deg))
+               rotateY(calc(var(--mouse-x, 0) * 2deg));
+    animation: none;
   }
 }
 

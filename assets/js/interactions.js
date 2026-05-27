@@ -1,33 +1,43 @@
 /**
  * interactions.js
- * Loader, navbar, mobile menu, FAQ, scroll progress.
+ * Loader, navbar, mobile menu, FAQ, scroll progress, scroll spy.
+ * Vanilla JS, mobile-first, ~3kb.
  */
 (() => {
-  // ============ LOADER ============
-  const loader = document.getElementById('loader');
-  const hideLoader = () => loader?.classList.add('is-done');
+  'use strict';
 
-  window.addEventListener('load', () => setTimeout(hideLoader, 200));
-  setTimeout(hideLoader, 1500);
+  // ============ LOADER ============
+  // Esconde quando pagina carrega + failsafe duplo
+  const loader = document.getElementById('loader');
+  const hideLoader = () => {
+    if (loader) loader.classList.add('is-done');
+  };
+
+  if (document.readyState === 'complete') {
+    setTimeout(hideLoader, 100);
+  } else {
+    window.addEventListener('load', () => setTimeout(hideLoader, 100));
+  }
+  setTimeout(hideLoader, 1500); // failsafe
 
   // ============ NAVBAR SCROLLED ============
   const nav = document.getElementById('nav');
   if (nav) {
-    let ticking = false;
-    const onScroll = () => {
-      if (!ticking) {
+    let navTicking = false;
+    const onNavScroll = () => {
+      if (!navTicking) {
         requestAnimationFrame(() => {
           nav.classList.toggle('scrolled', window.scrollY > 32);
-          ticking = false;
+          navTicking = false;
         });
-        ticking = true;
+        navTicking = true;
       }
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    window.addEventListener('scroll', onNavScroll, { passive: true });
+    onNavScroll();
   }
 
-  // ============ MOBILE MENU (com focus trap WCAG 2.4.3) ============
+  // ============ MOBILE MENU (focus trap WCAG 2.4.3) ============
   const burger = document.querySelector('.nav__burger');
   const mobileMenu = document.getElementById('mobileMenu');
 
@@ -94,17 +104,24 @@
     });
   });
 
-  // ============ SCROLL PROGRESS (GPU-only via scaleX) ============
+  // ============ SCROLL PROGRESS (GPU via scaleX) ============
   const progress = document.querySelector('.scroll-progress__fill');
   if (progress) {
-    const onScroll = () => {
+    let progressTicking = false;
+    const updateProgress = () => {
       const h = document.documentElement;
       const total = h.scrollHeight - h.clientHeight;
       const pct = total > 0 ? h.scrollTop / total : 0;
       progress.style.transform = `scaleX(${pct})`;
+      progressTicking = false;
     };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    window.addEventListener('scroll', () => {
+      if (!progressTicking) {
+        requestAnimationFrame(updateProgress);
+        progressTicking = true;
+      }
+    }, { passive: true });
+    updateProgress();
   }
 
   // ============ SCROLL SPY — active nav link ============
@@ -150,5 +167,22 @@
       }
     }, { passive: true });
     updateSpy();
+  }
+
+  // ============ NATIVE SMOOTH SCROLL (mobile) ============
+  // Quando Lenis nao esta presente (mobile/touch), anchor links usam scroll nativo suave
+  if (!window.lenis) {
+    document.querySelectorAll('a[href^="#"]').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        const id = a.getAttribute('href');
+        if (!id || id === '#' || id.length <= 1) return;
+        const target = document.querySelector(id);
+        if (!target) return;
+        e.preventDefault();
+        const navHeight = 80;
+        const targetY = target.getBoundingClientRect().top + window.scrollY - navHeight;
+        window.scrollTo({ top: targetY, behavior: 'smooth' });
+      });
+    });
   }
 })();
