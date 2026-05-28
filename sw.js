@@ -4,7 +4,7 @@
  * Auto-cleanup de caches antigos.
  */
 
-const CACHE_VERSION = 'v3.0.0-nasa-mobile-first';
+const CACHE_VERSION = 'v3.1.0-grid-overflow-fix';
 const CACHE_NAME = `ygor-premium-${CACHE_VERSION}`;
 
 const urlsToCache = [
